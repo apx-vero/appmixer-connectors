@@ -20,14 +20,14 @@
             "schema": {
                 "type": "object",
                 "properties": {
-                    "module_api_name": {
+                    "moduleApiName": {
                         "type": "string"
                     }
                 }
             },
             "inspector": {
                 "inputs": {
-                    "module_api_name": {
+                    "moduleApiName": {
                         "type": "text",
                         "tooltip": "The API name of the custom module to retrieve. This is the unique identifier for the module in Zoho CRM. Examples: Contacts, Accounts, Deals, Custom_Module_1",
                         "label": "Module Api Name",

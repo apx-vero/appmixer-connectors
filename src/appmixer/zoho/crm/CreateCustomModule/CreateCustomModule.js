@@ -35,9 +35,11 @@ module.exports = {
         let profiles = [];
         try {
             const profilesResponse = await zc.request('GET', '/crm/v8/settings/profiles');
-            if (profilesResponse.profiles && Array.isArray(profilesResponse.profiles) && profilesResponse.profiles.length > 0) {
-                profiles = profilesResponse.profiles.map(p => ({ id: p.id }));
-            } else if (profilesResponse.data && Array.isArray(profilesResponse.data) && profilesResponse.data.length > 0) {
+            const responseProfiles = profilesResponse.profiles;
+            const responseData = profilesResponse.data;
+            if (responseProfiles && Array.isArray(responseProfiles) && responseProfiles.length > 0) {
+                profiles = responseProfiles.map(p => ({ id: p.id }));
+            } else if (responseData && Array.isArray(responseData) && responseData.length > 0) {
                 // Handle alternative response format
                 profiles = profilesResponse.data.map(p => ({ id: p.id }));
             }

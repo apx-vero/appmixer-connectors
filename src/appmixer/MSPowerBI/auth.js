@@ -25,14 +25,17 @@ module.exports = {
 
         refreshAccessToken: `https://login.microsoftonline.com/${TENANT}/oauth2/v2.0/token`,
 
-        accountNameFromProfileInfo: (context) => {
-            const { profileInfo } = context;
-            return profileInfo.displayName || profileInfo.userPrincipalName || 'Power BI User';
+        accountNameFromProfileInfo: () => {
+            return 'Power BI';
         },
 
-        emailFromProfileInfo: 'mail',
-
-        requestProfileInfo: 'https://graph.microsoft.com/v1.0/me',
+        requestProfileInfo: {
+            method: 'GET',
+            url: 'https://api.powerbi.com/v1.0/myorg/datasets',
+            auth: {
+                bearer: '{{accessToken}}'
+            }
+        },
 
         validateAccessToken: {
             method: 'GET',

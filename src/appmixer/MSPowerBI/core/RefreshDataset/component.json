@@ -7,7 +7,7 @@
     "auth": {
         "service": "appmixer:MSPowerBI",
         "scope": [
-            "Dataset.ReadWrite.All"
+            "https://analysis.windows.net/powerbi/api/Dataset.ReadWrite.All"
         ]
     },
     "quota": {

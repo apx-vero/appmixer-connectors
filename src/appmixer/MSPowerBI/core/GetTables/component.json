@@ -5,7 +5,10 @@
     "private": false,
     "icon": "data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBmaWxsPSIjRjJDODExIiByeD0iMiIvPjxyZWN0IHg9IjQiIHk9IjEwIiB3aWR0aD0iMyIgaGVpZ2h0PSIxMCIgZmlsbD0iIzI0M0E1RSIvPjxyZWN0IHg9IjEwIiB5PSI2IiB3aWR0aD0iMyIgaGVpZ2h0PSIxNCIgZmlsbD0iIzI0M0E1RSIvPjxyZWN0IHg9IjE2IiB5PSIyIiB3aWR0aD0iMyIgaGVpZ2h0PSIxOCIgZmlsbD0iIzI0M0E1RSIvPjwvc3ZnPg==",
     "auth": {
-        "service": "appmixer:MSPowerBI"
+        "service": "appmixer:MSPowerBI",
+        "scope": [
+            "Dataset.Read.All"
+        ]
     },
     "quota": {
         "manager": "appmixer:MSPowerBI:core",
@@ -24,7 +27,9 @@
                         "type": "string"
                     }
                 },
-                "required": ["datasetId"]
+                "required": [
+                    "datasetId"
+                ]
             },
             "inspector": {
                 "inputs": {
@@ -49,8 +54,14 @@
         {
             "name": "out",
             "options": [
-                { "label": "Tables", "value": "tables" },
-                { "label": "Table Count", "value": "count" }
+                {
+                    "label": "Tables",
+                    "value": "tables"
+                },
+                {
+                    "label": "Table Count",
+                    "value": "count"
+                }
             ]
         }
     ],

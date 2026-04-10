@@ -8,14 +8,7 @@ module.exports = {
 
     definition: {
 
-        scope: [
-            'offline_access',
-            'https://analysis.windows.net/powerbi/api/Dataset.Read.All',
-            'https://analysis.windows.net/powerbi/api/Dataset.ReadWrite.All',
-            'https://analysis.windows.net/powerbi/api/Dashboard.Read.All',
-            'https://analysis.windows.net/powerbi/api/Report.Read.All',
-            'https://analysis.windows.net/powerbi/api/Group.Read.All'
-        ],
+        scope: ['offline_access'],
 
         scopeDelimiter: ' ',
 

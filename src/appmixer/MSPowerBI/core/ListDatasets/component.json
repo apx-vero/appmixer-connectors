@@ -1,0 +1,62 @@
+{
+    "name": "appmixer.MSPowerBI.core.ListDatasets",
+    "author": "Appmixer",
+    "description": "Returns a list of datasets from My Workspace (or from a specified group/workspace).",
+    "private": false,
+    "icon": "data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBmaWxsPSIjRjJDODExIiByeD0iMiIvPjxyZWN0IHg9IjQiIHk9IjEwIiB3aWR0aD0iMyIgaGVpZ2h0PSIxMCIgZmlsbD0iIzI0M0E1RSIvPjxyZWN0IHg9IjEwIiB5PSI2IiB3aWR0aD0iMyIgaGVpZ2h0PSIxNCIgZmlsbD0iIzI0M0E1RSIvPjxyZWN0IHg9IjE2IiB5PSIyIiB3aWR0aD0iMyIgaGVpZ2h0PSIxOCIgZmlsbD0iIzI0M0E1RSIvPjwvc3ZnPg==",
+    "auth": {
+        "service": "appmixer:MSPowerBI"
+    },
+    "quota": {
+        "manager": "appmixer:MSPowerBI:core",
+        "resources": "requests",
+        "scope": {
+            "userId": "{{userId}}"
+        }
+    },
+    "properties": {
+        "schema": {
+            "properties": {
+                "groupId": {
+                    "type": "string"
+                }
+            }
+        },
+        "inspector": {
+            "inputs": {
+                "groupId": {
+                    "type": "text",
+                    "group": "config",
+                    "label": "Workspace (Group) ID",
+                    "index": 1,
+                    "tooltip": "Optional. The workspace (group) ID. If omitted, datasets from My Workspace are returned.",
+                    "required": false
+                }
+            },
+            "groups": {
+                "config": {
+                    "label": "Configuration",
+                    "index": 1
+                }
+            }
+        }
+    },
+    "inPorts": [
+        {
+            "name": "in",
+            "schema": {
+                "type": "object",
+                "properties": {}
+            }
+        }
+    ],
+    "outPorts": [
+        {
+            "name": "out",
+            "options": [
+                { "label": "Datasets", "value": "datasets" },
+                { "label": "Dataset Count", "value": "count" }
+            ]
+        }
+    ]
+}

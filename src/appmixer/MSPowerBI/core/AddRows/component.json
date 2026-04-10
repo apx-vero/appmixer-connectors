@@ -1,0 +1,107 @@
+{
+    "name": "appmixer.MSPowerBI.core.AddRows",
+    "author": "Appmixer",
+    "description": "Adds new data rows to the specified table in a push dataset. Used for streaming/real-time data scenarios.",
+    "private": false,
+    "icon": "data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBmaWxsPSIjRjJDODExIiByeD0iMiIvPjxyZWN0IHg9IjQiIHk9IjEwIiB3aWR0aD0iMyIgaGVpZ2h0PSIxMCIgZmlsbD0iIzI0M0E1RSIvPjxyZWN0IHg9IjEwIiB5PSI2IiB3aWR0aD0iMyIgaGVpZ2h0PSIxNCIgZmlsbD0iIzI0M0E1RSIvPjxyZWN0IHg9IjE2IiB5PSIyIiB3aWR0aD0iMyIgaGVpZ2h0PSIxOCIgZmlsbD0iIzI0M0E1RSIvPjwvc3ZnPg==",
+    "auth": {
+        "service": "appmixer:MSPowerBI"
+    },
+    "quota": {
+        "manager": "appmixer:MSPowerBI:core",
+        "resources": "requests",
+        "scope": {
+            "userId": "{{userId}}"
+        }
+    },
+    "inPorts": [
+        {
+            "name": "in",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "datasetId": {
+                        "type": "string"
+                    },
+                    "tableName": {
+                        "type": "string"
+                    },
+                    "rows": {
+                        "type": "string",
+                        "description": "JSON array of row objects to add."
+                    }
+                },
+                "required": ["datasetId", "tableName", "rows"]
+            },
+            "inspector": {
+                "inputs": {
+                    "datasetId": {
+                        "type": "text",
+                        "group": "config",
+                        "label": "Dataset ID",
+                        "index": 1,
+                        "tooltip": "The ID of the push dataset."
+                    },
+                    "tableName": {
+                        "type": "text",
+                        "group": "config",
+                        "label": "Table Name",
+                        "index": 2,
+                        "tooltip": "The name of the table to add rows to."
+                    },
+                    "rows": {
+                        "type": "textarea",
+                        "group": "config",
+                        "label": "Rows (JSON Array)",
+                        "index": 3,
+                        "tooltip": "A JSON array of row objects. Example: [{\"ProductID\":1,\"Name\":\"Widget\"}]"
+                    }
+                },
+                "groups": {
+                    "config": {
+                        "label": "Configuration",
+                        "index": 1
+                    }
+                }
+            }
+        }
+    ],
+    "outPorts": [
+        {
+            "name": "out",
+            "options": [
+                { "label": "Status", "value": "status" },
+                { "label": "Dataset ID", "value": "datasetId" },
+                { "label": "Table Name", "value": "tableName" },
+                { "label": "Rows Added", "value": "rowsAdded" }
+            ]
+        }
+    ],
+    "properties": {
+        "schema": {
+            "properties": {
+                "groupId": {
+                    "type": "string"
+                }
+            }
+        },
+        "inspector": {
+            "inputs": {
+                "groupId": {
+                    "type": "text",
+                    "group": "config",
+                    "label": "Workspace (Group) ID",
+                    "index": 4,
+                    "tooltip": "Optional. The workspace (group) ID. If omitted, My Workspace is used.",
+                    "required": false
+                }
+            },
+            "groups": {
+                "config": {
+                    "label": "Configuration",
+                    "index": 1
+                }
+            }
+        }
+    }
+}

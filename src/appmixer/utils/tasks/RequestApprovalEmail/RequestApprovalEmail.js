@@ -66,12 +66,12 @@ const prepareMessage = (context, emailForApproval, data, variables) => {
                     <div style="width: 100%;border-radius: 3px;border:1px solid #ECECEC;background: #FCFBFB; padding: 15px 14px 26px;box-sizing: border-box;text-align: left;"> 
                     <p style="width: 100%;color: #050505;font-size: 13px;text-align: left;">{{{task_description}}}</p> 
                 </div> 
-                <div style="margin: 10px 0;"> 
-                    <span style="font-size: 14px; vertical-align: sub;">&#128336;</span> 
+                <div style="margin: 8px 0;" title="Decision By"> 
+                    <span style="font-size: 14px;">&#128336;</span> 
                     <span style="margin-left: 6px; font-size: 12px;">{{task_decision_by}}</span> 
                 </div> 
-                <div style="margin: 15px 0;"> 
-                    <span style="font-size: 14px; vertical-align: sub;">&#128100;</span> 
+                <div style="margin: 8px 0;" title="Requester Email"> 
+                    <span style="font-size: 14px;">&#128100;</span> 
                     <span style="margin-left: 6px; font-size: 12px;">{{requester_email}}</span> 
                 </div> 
                 <a href="{{task_dashboard_link_requester}}" style="font-size: 15px;display: block; margin: 28px auto; 

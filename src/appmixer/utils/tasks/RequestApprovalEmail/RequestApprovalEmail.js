@@ -25,12 +25,12 @@ const prepareMessage = (context, emailForApproval, data, variables) => {
                             box-sizing: border-box;text-align: left;"> 
                 <p style="width: 100%;color: #050505;font-size: 13px;text-align: left;">{{{task_description}}}</p> 
             </div> 
-            <div style="margin: 10px 0;"> 
-                <span style="font-size: 14px; vertical-align: sub;">&#128336;</span> 
+            <div style="margin: 8px 0;" title="Decision By"> 
+                <span style="font-size: 14px;">&#128336;</span> 
                 <span style="margin-left: 6px; font-size: 12px;">{{task_decision_by}}</span> 
             </div> 
-            <div style="margin: 15px 0;"> 
-                <span style="font-size: 14px; vertical-align: sub;">&#128100;</span> 
+            <div style="margin: 8px 0;" title="Requester Email"> 
+                    <span style="font-size: 14px;">&#128100;</span> 
                 <span style="margin-left: 6px; font-size: 12px;">{{requester_email}}</span> 
             </div> 
             <div style="width: 100%; text-align: center;"> 

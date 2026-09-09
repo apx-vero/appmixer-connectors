@@ -1,0 +1,200 @@
+{
+    "name": "CI - Copilot review -> repository_dispatch",
+    "flow": {
+        "a1000000-0000-4000-8000-000000000001": {
+            "type": "appmixer.utils.timers.Timer",
+            "version": "1.0.1",
+            "errorHandling": {
+                "autoRetry": true,
+                "onError": "ignore"
+            },
+            "config": {
+                "properties": {
+                    "interval": 5
+                }
+            },
+            "x": 208,
+            "y": 128
+        },
+        "a1000000-0000-4000-8000-000000000002": {
+            "type": "appmixer.github.list.MakeApiCall",
+            "version": "1.0.0",
+            "errorHandling": {
+                "autoRetry": true,
+                "onError": "ignore"
+            },
+            "source": {
+                "in": {
+                    "a1000000-0000-4000-8000-000000000001": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "transform": {
+                    "in": {
+                        "a1000000-0000-4000-8000-000000000001": {
+                            "out": {
+                                "type": "json2new",
+                                "modifiers": {
+                                    "url": {},
+                                    "method": {},
+                                    "body": {},
+                                    "headers": {},
+                                    "parameters": {}
+                                },
+                                "lambda": {
+                                    "url": "/repos/Appmixer-ai/appmixer-connectors/pulls/comments?sort=created&direction=desc&per_page=100",
+                                    "method": "GET"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "x": 416,
+            "y": 128
+        },
+        "a1000000-0000-4000-8000-000000000003": {
+            "type": "appmixer.utils.controls.CodeBlock",
+            "version": "1.0.0",
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "ignore"
+            },
+            "source": {
+                "in": {
+                    "a1000000-0000-4000-8000-000000000002": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "transform": {
+                    "in": {
+                        "a1000000-0000-4000-8000-000000000002": {
+                            "out": {
+                                "type": "json2new",
+                                "modifiers": {
+                                    "code": {},
+                                    "variables": {
+                                        "b2000000-0000-4000-8000-000000000001": {
+                                            "variable": "$.a1000000-0000-4000-8000-000000000002.out.body",
+                                            "functions": []
+                                        },
+                                        "b2000000-0000-4000-8000-000000000002": {
+                                            "variable": "$.a1000000-0000-4000-8000-000000000001.out.lastTick",
+                                            "functions": []
+                                        }
+                                    }
+                                },
+                                "lambda": {
+                                    "code": "(function () {\n    var comments = $data.comments || [];\n    var since = $data.lastTick\n        ? new Date($data.lastTick).getTime()\n        : (Date.now() - 6 * 60 * 1000);\n    var seen = {};\n    var out = [];\n    for (var i = 0; i < comments.length; i++) {\n        var c = comments[i];\n        if (!c || !c.user || !c.user.login) { continue; }\n        if (String(c.user.login).toLowerCase().indexOf('copilot') === -1) { continue; }\n        if (new Date(c.created_at).getTime() <= since) { continue; }\n        var rid = String(c.pull_request_review_id || '');\n        if (!rid || seen[rid]) { continue; }\n        seen[rid] = true;\n        var parts = String(c.pull_request_url || '').split('/');\n        var pr = parts[parts.length - 1];\n        if (!/^[0-9]+$/.test(pr)) { continue; }\n        out.push(JSON.stringify({ pr_number: pr, review_id: rid }));\n    }\n    return JSON.stringify(out);\n})();",
+                                    "variables": {
+                                        "ADD": [
+                                            {
+                                                "name": "comments",
+                                                "type": "text",
+                                                "text": "{{{b2000000-0000-4000-8000-000000000001}}}"
+                                            },
+                                            {
+                                                "name": "lastTick",
+                                                "type": "text",
+                                                "text": "{{{b2000000-0000-4000-8000-000000000002}}}"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "x": 624,
+            "y": 128
+        },
+        "a1000000-0000-4000-8000-000000000004": {
+            "type": "appmixer.utils.controls.Each",
+            "version": "1.4.8",
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "ignore"
+            },
+            "source": {
+                "in": {
+                    "a1000000-0000-4000-8000-000000000003": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "transform": {
+                    "in": {
+                        "a1000000-0000-4000-8000-000000000003": {
+                            "out": {
+                                "type": "json2new",
+                                "modifiers": {
+                                    "list": {
+                                        "b2000000-0000-4000-8000-000000000003": {
+                                            "variable": "$.a1000000-0000-4000-8000-000000000003.out.result",
+                                            "functions": []
+                                        }
+                                    },
+                                    "delay": {}
+                                },
+                                "lambda": {
+                                    "list": "{{{b2000000-0000-4000-8000-000000000003}}}"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "x": 832,
+            "y": 128
+        },
+        "a1000000-0000-4000-8000-000000000005": {
+            "type": "appmixer.github.list.RepositoryDispatch",
+            "version": "1.0.0",
+            "errorHandling": {
+                "autoRetry": true,
+                "onError": "ignore"
+            },
+            "source": {
+                "in": {
+                    "a1000000-0000-4000-8000-000000000004": [
+                        "item"
+                    ]
+                }
+            },
+            "config": {
+                "transform": {
+                    "in": {
+                        "a1000000-0000-4000-8000-000000000004": {
+                            "item": {
+                                "type": "json2new",
+                                "modifiers": {
+                                    "repositoryId": {},
+                                    "eventType": {},
+                                    "clientPayload": {
+                                        "b2000000-0000-4000-8000-000000000004": {
+                                            "variable": "$.a1000000-0000-4000-8000-000000000004.item.value",
+                                            "functions": []
+                                        }
+                                    }
+                                },
+                                "lambda": {
+                                    "repositoryId": "Appmixer-ai/appmixer-connectors",
+                                    "eventType": "copilot-review",
+                                    "clientPayload": "{{{b2000000-0000-4000-8000-000000000004}}}"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "x": 1040,
+            "y": 128
+        }
+    }
+}

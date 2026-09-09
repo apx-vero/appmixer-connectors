@@ -102,13 +102,18 @@ responder pushed fixes and replied, but nothing can close the threads.
 
 ## Implementation gotchas
 
-- **Copilot's login differs per API surface.** REST reports
-  `user.login = "Copilot"`; GraphQL reports
-  `author.login = "copilot-pull-request-reviewer"` (*verified*, same threads).
-  An author filter that only knows one of them silently matches nothing. Match
-  case-insensitively on the substring `copilot`, and also accept
-  `copilot-pull-request-reviewer[bot]`, which is the form the webhook payload
-  uses.
+- **Copilot's login differs per endpoint — including between two REST endpoints.**
+  One account, user id `175728472`, node `BOT_kgDOCnlnWA`, is reported as
+  (*all verified*):
+  - `Copilot` on REST `/repos/{o}/{r}/pulls/comments`
+  - `copilot-pull-request-reviewer[bot]` on REST `/repos/{o}/{r}/pulls/{n}/reviews`
+  - `copilot-pull-request-reviewer` in GraphQL
+
+  An author filter that compares raw strings silently matches nothing as soon as
+  the login is taken from a different endpoint than the one being filtered.
+  `lib.normalizeLogin` lowercases and strips a trailing `[bot]`, and
+  `lib.matchesAuthor` accepts a prefix match on top of that, so `copilot` matches
+  all three forms.
 - **`since` is documented as last-updated, not created** (docs; could not be
   confirmed here — this repo has no genuinely edited comments, the largest
   `created_at`→`updated_at` gap on a full page is 2 s). So an edited old comment

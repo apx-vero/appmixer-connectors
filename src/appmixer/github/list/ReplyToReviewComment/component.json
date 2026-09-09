@@ -1,0 +1,197 @@
+{
+    "name": "appmixer.github.list.ReplyToReviewComment",
+    "label": "Reply To Review Comment",
+    "description": "Reply to an existing pull request review comment, inside its review thread.",
+    "author": "Appmixer <info@appmixer.com>",
+    "version": "1.0.0",
+    "private": false,
+    "auth": {
+        "service": "appmixer:github",
+        "scope": [
+            "public_repo",
+            "repo"
+        ]
+    },
+    "quota": {
+        "manager": "appmixer:github",
+        "resources": "requests",
+        "scope": {
+            "userId": "{{userId}}"
+        }
+    },
+    "inPorts": [
+        {
+            "name": "in",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "repositoryId": {
+                        "type": "string",
+                        "pattern": "[^/]+[/][^/]+"
+                    },
+                    "pullRequestNumber": {
+                        "type": "string"
+                    },
+                    "commentId": {
+                        "type": "string"
+                    },
+                    "body": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "repositoryId",
+                    "pullRequestNumber",
+                    "commentId",
+                    "body"
+                ]
+            },
+            "inspector": {
+                "inputs": {
+                    "repositoryId": {
+                        "type": "text",
+                        "group": "config",
+                        "label": "Repository",
+                        "index": 1,
+                        "source": {
+                            "url": "/component/appmixer/github/list/ListRepos?outPort=repositories",
+                            "data": {
+                                "transform": "./transformers#reposToSelectArray"
+                            }
+                        },
+                        "tooltip": "The repository the pull request lives in, in the 'owner/repo' form."
+                    },
+                    "pullRequestNumber": {
+                        "type": "text",
+                        "label": "Pull Request Number",
+                        "index": 2,
+                        "tooltip": "The number of the pull request the comment belongs to."
+                    },
+                    "commentId": {
+                        "type": "text",
+                        "label": "Comment ID",
+                        "index": 3,
+                        "tooltip": "The ID of the review comment to reply to. Replying to any comment in a thread appends to that thread."
+                    },
+                    "body": {
+                        "type": "textarea",
+                        "label": "Body",
+                        "index": 4,
+                        "tooltip": "The text of the reply. Markdown is supported."
+                    }
+                }
+            }
+        }
+    ],
+    "outPorts": [
+        {
+            "name": "out",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "title": "ID",
+                        "example": 3966546621
+                    },
+                    "nodeId": {
+                        "type": "string",
+                        "title": "Node ID",
+                        "example": "PRRC_kwDOK5R0o86ubJc9"
+                    },
+                    "body": {
+                        "type": "string",
+                        "title": "Body",
+                        "example": "`since` is advanced after the API call, so a comment can be missed."
+                    },
+                    "htmlUrl": {
+                        "type": "string",
+                        "title": "HTML URL",
+                        "example": "https://github.com/octocat/Hello-World/pull/1259#discussion_r3966546621"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "title": "Created At",
+                        "example": "2026-09-09T09:01:23Z"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "title": "Updated At",
+                        "example": "2026-09-09T09:01:24Z"
+                    },
+                    "pullRequestNumber": {
+                        "type": "integer",
+                        "title": "Pull Request Number",
+                        "example": 1259
+                    },
+                    "pullRequestReviewId": {
+                        "type": "integer",
+                        "title": "Pull Request Review ID",
+                        "example": 5152089066
+                    },
+                    "inReplyToId": {
+                        "type": "integer",
+                        "title": "In Reply To ID",
+                        "example": 3966546487
+                    },
+                    "path": {
+                        "type": "string",
+                        "title": "Path",
+                        "example": "src/appmixer/github/list/NewMention/NewMention.js"
+                    },
+                    "line": {
+                        "type": "integer",
+                        "title": "Line",
+                        "example": 88
+                    },
+                    "startLine": {
+                        "type": "integer",
+                        "title": "Start Line",
+                        "example": 84
+                    },
+                    "side": {
+                        "type": "string",
+                        "title": "Side",
+                        "example": "RIGHT"
+                    },
+                    "subjectType": {
+                        "type": "string",
+                        "title": "Subject Type",
+                        "example": "line"
+                    },
+                    "diffHunk": {
+                        "type": "string",
+                        "title": "Diff Hunk",
+                        "example": "@@ -84,6 +84,8 @@ const nextSince = nowIso();"
+                    },
+                    "commitId": {
+                        "type": "string",
+                        "title": "Commit ID",
+                        "example": "e80efb98eb3b79d523a0bbf51a062c85bda2840a"
+                    },
+                    "userLogin": {
+                        "type": "string",
+                        "title": "User Login",
+                        "example": "Copilot"
+                    },
+                    "userId": {
+                        "type": "integer",
+                        "title": "User ID",
+                        "example": 175728472
+                    },
+                    "userType": {
+                        "type": "string",
+                        "title": "User Type",
+                        "example": "Bot"
+                    },
+                    "authorAssociation": {
+                        "type": "string",
+                        "title": "Author Association",
+                        "example": "MEMBER"
+                    }
+                }
+            }
+        }
+    ],
+    "icon": "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAyMi4xLjAsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjxzdmcgdmVyc2lvbj0iMS4yIiBiYXNlUHJvZmlsZT0idGlueSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiDQoJIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMjM1MCAyMzE0LjgiIHhtbDpzcGFjZT0icHJlc2VydmUiPg0KPHBhdGggZD0iTTExNzUsMEM1MjUuOCwwLDAsNTI1LjgsMCwxMTc1YzAsNTUyLjIsMzc4LjksMTAxMC41LDg5MC4xLDExMzkuN2MtNS45LTE0LjctOC44LTM1LjMtOC44LTU1Ljh2LTE5OS44SDczNC40DQoJYy03OS4zLDAtMTUyLjgtMzUuMi0xODUuMS05OS45Yy0zOC4yLTcwLjUtNDQuMS0xNzkuMi0xNDEtMjQ2LjhjLTI5LjQtMjMuNS01LjktNDcsMjYuNC00NC4xYzYxLjcsMTcuNiwxMTEuNiw1OC44LDE1OC42LDEyMC40DQoJYzQ3LDYxLjcsNjcuNiw3Ni40LDE1NS43LDc2LjRjNDEuMSwwLDEwNS43LTIuOSwxNjQuNS0xMS44YzMyLjMtODIuMyw4OC4xLTE1NS43LDE1NS43LTE5MC45Yy0zOTMuNi00Ny01ODEuNi0yNDAuOS01ODEuNi01MDUuMw0KCWMwLTExNC42LDQ5LjktMjIzLjMsMTMyLjItMzE3LjNjLTI2LjQtOTEuMS02MS43LTI3OS4xLDExLjgtMzUyLjVjMTc2LjMsMCwyODIsMTE0LjYsMzA4LjQsMTQzLjljODguMS0yOS40LDE4NS4xLTQ3LDI4NC45LTQ3DQoJYzEwMi44LDAsMTk2LjgsMTcuNiwyODQuOSw0N2MyNi40LTI5LjQsMTMyLjItMTQzLjksMzA4LjQtMTQzLjljNzAuNSw3MC41LDM4LjIsMjYxLjQsOC44LDM1Mi41YzgyLjMsOTEuMSwxMjkuMywyMDIuNywxMjkuMywzMTcuMw0KCWMwLDI2NC40LTE4NS4xLDQ1OC4zLTU3NS43LDQ5OS40YzEwOC43LDU1LjgsMTg1LjEsMjE0LjQsMTg1LjEsMzMxLjlWMjI1NmMwLDguOC0yLjksMTcuNi0yLjksMjYuNA0KCUMyMDIxLDIxMjMuOCwyMzUwLDE2ODkuMSwyMzUwLDExNzVDMjM1MCw1MjUuOCwxODI0LjIsMCwxMTc1LDBMMTE3NSwweiIvPg0KPC9zdmc+DQo="
+}

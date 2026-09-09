@@ -184,6 +184,107 @@ module.exports = {
     },
 
     /**
+     * Normalize a GitHub login for comparison: trim, lowercase, drop a trailing `[bot]`.
+     *
+     * One account answers to several logins depending on which endpoint you ask, REST
+     * included. Copilot's code reviewer — user id 175728472 throughout — is reported as
+     * `Copilot` on `/pulls/comments`, `copilot-pull-request-reviewer[bot]` on
+     * `/pulls/{n}/reviews` and `copilot-pull-request-reviewer` in GraphQL. A filter that
+     * compares raw strings therefore silently matches nothing whenever the user takes the
+     * login from a different endpoint than the one being filtered, so `matchesAuthor` also
+     * accepts a prefix match between the two normalized logins.
+     *
+     * @param {String} [login]
+     * @returns {String}
+     */
+    normalizeLogin(login) {
+
+        return String(login || '').trim().toLowerCase().replace(/\[bot\]$/, '');
+    },
+
+    /**
+     * Does this GitHub `user` object pass an author filter?
+     *
+     * @param {Object} [user] the `user` object of a comment or review
+     * @param {Object} [filter]
+     * @param {String} [filter.author] login to match, case-insensitive, `[bot]` ignored
+     * @param {String} [filter.authorType] `any` (default), `user` or `bot`
+     * @returns {Boolean}
+     */
+    matchesAuthor(user, { author, authorType } = {}) {
+
+        if (authorType && authorType !== 'any') {
+            const isBot = (user && user.type) === 'Bot';
+            if (authorType === 'bot' && !isBot) return false;
+            if (authorType === 'user' && isBot) return false;
+        }
+
+        if (!author) return true;
+
+        const wanted = this.normalizeLogin(author);
+        if (!wanted) return true;
+
+        const actual = this.normalizeLogin(user && user.login);
+        if (!actual) return false;
+
+        // Exact match, or one login is the other's prefix — see normalizeLogin().
+        return actual === wanted || actual.startsWith(wanted) || wanted.startsWith(actual);
+    },
+
+    /**
+     * Pull the trailing number out of a GitHub API URL, e.g. the `1259` of
+     * `https://api.github.com/repos/octocat/Hello-World/pulls/1259`. Returns null when
+     * the URL does not end in a number.
+     *
+     * @param {String} [url]
+     * @returns {Number|null}
+     */
+    numberFromUrl(url) {
+
+        const match = /\/(\d+)\/?$/.exec(String(url || ''));
+        return match ? parseInt(match[1], 10) : null;
+    },
+
+    /**
+     * Flatten a pull request review comment into the record shape shared by the
+     * review-comment trigger and actions.
+     *
+     * Two fields are worth the indirection: `pullRequestNumber`, which the raw payload
+     * carries only inside `pull_request_url`, and `line`, which is null once a comment
+     * goes outdated — `original_line` still points at the diff it was written against.
+     *
+     * @param {Object} comment
+     * @returns {Object}
+     */
+    toReviewCommentRecord(comment) {
+
+        const orNull = (value, fallback) => (value !== null && value !== undefined ? value : fallback);
+
+        return {
+            id: comment.id,
+            nodeId: comment.node_id,
+            body: comment.body,
+            htmlUrl: comment.html_url,
+            createdAt: comment.created_at,
+            updatedAt: comment.updated_at,
+            pullRequestNumber: this.numberFromUrl(comment.pull_request_url),
+            pullRequestReviewId: comment.pull_request_review_id,
+            inReplyToId: comment.in_reply_to_id,
+            path: comment.path,
+            line: orNull(comment.line, comment.original_line),
+            startLine: orNull(comment.start_line, comment.original_start_line),
+            side: comment.side,
+            subjectType: comment.subject_type,
+            diffHunk: comment.diff_hunk,
+            commitId: comment.commit_id,
+            userLogin: comment.user && comment.user.login,
+            userId: comment.user && comment.user.id,
+            userType: comment.user && comment.user.type,
+            authorAssociation: comment.author_association
+        };
+    },
+
+    /**
      * Normalize multiselect input (array or string) to array format.
      * Strings are treated as single values or comma-separated lists.
      * @param {string|string[]} input

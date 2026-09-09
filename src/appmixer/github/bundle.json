@@ -1,6 +1,6 @@
 {
     "name": "appmixer.github",
-    "version": "3.2.0",
+    "version": "3.3.0",
     "changelog": {
         "1.0.3": [
             "Removed 'None' empty string value from ListAssignees, ListLabels and ListMilestones."
@@ -21,7 +21,7 @@
             "Added output examples to component schemas."
         ],
         "3.0.0": [
-            "(breaking change) MakeApiCall: headers and parameters changed to key-value array inputs (body remains textarea/JSON to support nested structures) per standard #1459 \u2014 existing flows that used the old string/textarea headers or parameters must be updated"
+            "(breaking change) MakeApiCall: headers and parameters changed to key-value array inputs (body remains textarea/JSON to support nested structures) per standard #1459 — existing flows that used the old string/textarea headers or parameters must be updated"
         ],
         "3.1.0": [
             "Added test() (Flow Test Mode) to all triggers: NewStargazer, NewCommitComment, NewTeam, NewOrganization, NewMilestone, NewNotification, NewBranch, NewWatcher, NewRelease, NewRepository, NewCollaborator, NewGist, NewReviewRequest, NewPullRequest, NewIssue, NewGlobalEvent, NewCommit, NewLabel, NewEvent."
@@ -34,6 +34,11 @@
             "Added output examples and schemas to output port options across all components.",
             "Polling triggers now cap the stored known-IDs state at 500 entries.",
             "Raised the requests-projects quota (GraphQL, Projects v2) from 5 to 60 calls per minute; the old limit was exhausted by the designer's schema calls alone."
+        ],
+        "3.3.0": [
+            "Added pull request comment components. Triggers: NewPullRequestReviewComment (inline diff comments, repository-wide), NewIssueComment (issue and pull request conversation comments, with a pull request / issue filter) and NewReview (submitted reviews, including an approval carrying no inline comments). Actions: ReplyToReviewComment, CreateReviewComment, FindReviewComments, ListReviews, ListReviewThreads, ResolveReviewThread and UnresolveReviewThread. Until now the connector could only reach issue comments, and nothing could see or resolve a review thread.",
+            "Added lib helpers normalizeLogin, matchesAuthor, numberFromUrl and toReviewCommentRecord. The author filters use them because GitHub reports one account under different logins per endpoint - Copilot's reviewer is 'Copilot' on /pulls/comments, 'copilot-pull-request-reviewer[bot]' on /pulls/{n}/reviews and 'copilot-pull-request-reviewer' in GraphQL - so a raw string comparison silently matches nothing.",
+            "Review thread resolution is available only through the GraphQL API; ListReviewThreads, ResolveReviewThread and UnresolveReviewThread use it and count against the existing GraphQL quota bucket."
         ]
     }
 }

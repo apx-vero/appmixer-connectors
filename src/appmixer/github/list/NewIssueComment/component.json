@@ -1,0 +1,200 @@
+{
+    "name": "appmixer.github.list.NewIssueComment",
+    "label": "New Issue Comment",
+    "description": "Triggers when a new comment is added to an issue or to a pull request conversation in the selected repository. These are the timeline comments, not the ones anchored to a line of a diff — for those use New Pull Request Review Comment.",
+    "author": "Appmixer <info@appmixer.com>",
+    "version": "1.0.0",
+    "private": false,
+    "tick": true,
+    "auth": {
+        "service": "appmixer:github",
+        "scope": [
+            "public_repo",
+            "repo"
+        ]
+    },
+    "quota": {
+        "manager": "appmixer:github",
+        "resources": "requests",
+        "scope": {
+            "userId": "{{userId}}"
+        }
+    },
+    "properties": {
+        "schema": {
+            "properties": {
+                "repositoryId": {
+                    "type": "string",
+                    "pattern": "[^/]+[/][^/]+"
+                },
+                "commentOn": {
+                    "type": "string",
+                    "enum": [
+                        "both",
+                        "pullRequest",
+                        "issue"
+                    ]
+                },
+                "author": {
+                    "type": "string"
+                },
+                "authorType": {
+                    "type": "string",
+                    "enum": [
+                        "any",
+                        "user",
+                        "bot"
+                    ]
+                }
+            },
+            "required": [
+                "repositoryId"
+            ]
+        },
+        "inspector": {
+            "inputs": {
+                "repositoryId": {
+                    "type": "text",
+                    "group": "config",
+                    "label": "Repository",
+                    "index": 1,
+                    "source": {
+                        "url": "/component/appmixer/github/list/ListRepos?outPort=repositories",
+                        "data": {
+                            "transform": "./transformers#reposToSelectArray"
+                        }
+                    },
+                    "tooltip": "The repository whose issues and pull requests to watch, in the 'owner/repo' form."
+                },
+                "commentOn": {
+                    "type": "select",
+                    "group": "config",
+                    "label": "Comment On",
+                    "index": 2,
+                    "defaultValue": "both",
+                    "tooltip": "GitHub returns issue and pull request comments from the same endpoint and the payload does not say which is which, so the component works it out from the comment URL.",
+                    "options": [
+                        {
+                            "label": "Issues and pull requests",
+                            "value": "both"
+                        },
+                        {
+                            "label": "Pull requests only",
+                            "value": "pullRequest"
+                        },
+                        {
+                            "label": "Issues only",
+                            "value": "issue"
+                        }
+                    ]
+                },
+                "author": {
+                    "type": "text",
+                    "label": "Author",
+                    "index": 3,
+                    "tooltip": "Optional. Only emit items written by this login. The comparison is case-insensitive, ignores a trailing <code>[bot]</code> and accepts a prefix, because GitHub reports the same account under different logins depending on the endpoint — Copilot's reviewer is <code>Copilot</code> on review comments, <code>copilot-pull-request-reviewer[bot]</code> on reviews and <code>copilot-pull-request-reviewer</code> in GraphQL. Entering <code>copilot</code> matches all three.",
+                    "group": "config"
+                },
+                "authorType": {
+                    "type": "select",
+                    "label": "Author Type",
+                    "index": 4,
+                    "defaultValue": "any",
+                    "tooltip": "Restrict to comments written by people, by bots, or by anyone.",
+                    "options": [
+                        {
+                            "label": "Anyone",
+                            "value": "any"
+                        },
+                        {
+                            "label": "People only",
+                            "value": "user"
+                        },
+                        {
+                            "label": "Bots only",
+                            "value": "bot"
+                        }
+                    ],
+                    "group": "config"
+                }
+            },
+            "groups": {
+                "config": {
+                    "label": "Configuration",
+                    "index": 1
+                }
+            }
+        }
+    },
+    "outPorts": [
+        {
+            "name": "out",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "title": "ID",
+                        "example": 5601725019
+                    },
+                    "nodeId": {
+                        "type": "string",
+                        "title": "Node ID",
+                        "example": "IC_kwDOK5R0o87OaBcb"
+                    },
+                    "body": {
+                        "type": "string",
+                        "title": "Body",
+                        "example": "Copilot review addressed."
+                    },
+                    "htmlUrl": {
+                        "type": "string",
+                        "title": "HTML URL",
+                        "example": "https://github.com/octocat/Hello-World/pull/1259#issuecomment-5601725019"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "title": "Created At",
+                        "example": "2026-09-09T12:20:12Z"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "title": "Updated At",
+                        "example": "2026-09-09T12:20:12Z"
+                    },
+                    "issueNumber": {
+                        "type": "integer",
+                        "title": "Issue Number",
+                        "example": 1259
+                    },
+                    "isPullRequest": {
+                        "type": "boolean",
+                        "title": "Is Pull Request",
+                        "example": true
+                    },
+                    "userLogin": {
+                        "type": "string",
+                        "title": "User Login",
+                        "example": "octocat"
+                    },
+                    "userId": {
+                        "type": "integer",
+                        "title": "User ID",
+                        "example": 583231
+                    },
+                    "userType": {
+                        "type": "string",
+                        "title": "User Type",
+                        "example": "User"
+                    },
+                    "authorAssociation": {
+                        "type": "string",
+                        "title": "Author Association",
+                        "example": "MEMBER"
+                    }
+                }
+            }
+        }
+    ],
+    "icon": "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAyMi4xLjAsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjxzdmcgdmVyc2lvbj0iMS4yIiBiYXNlUHJvZmlsZT0idGlueSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiDQoJIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMjM1MCAyMzE0LjgiIHhtbDpzcGFjZT0icHJlc2VydmUiPg0KPHBhdGggZD0iTTExNzUsMEM1MjUuOCwwLDAsNTI1LjgsMCwxMTc1YzAsNTUyLjIsMzc4LjksMTAxMC41LDg5MC4xLDExMzkuN2MtNS45LTE0LjctOC44LTM1LjMtOC44LTU1Ljh2LTE5OS44SDczNC40DQoJYy03OS4zLDAtMTUyLjgtMzUuMi0xODUuMS05OS45Yy0zOC4yLTcwLjUtNDQuMS0xNzkuMi0xNDEtMjQ2LjhjLTI5LjQtMjMuNS01LjktNDcsMjYuNC00NC4xYzYxLjcsMTcuNiwxMTEuNiw1OC44LDE1OC42LDEyMC40DQoJYzQ3LDYxLjcsNjcuNiw3Ni40LDE1NS43LDc2LjRjNDEuMSwwLDEwNS43LTIuOSwxNjQuNS0xMS44YzMyLjMtODIuMyw4OC4xLTE1NS43LDE1NS43LTE5MC45Yy0zOTMuNi00Ny01ODEuNi0yNDAuOS01ODEuNi01MDUuMw0KCWMwLTExNC42LDQ5LjktMjIzLjMsMTMyLjItMzE3LjNjLTI2LjQtOTEuMS02MS43LTI3OS4xLDExLjgtMzUyLjVjMTc2LjMsMCwyODIsMTE0LjYsMzA4LjQsMTQzLjljODguMS0yOS40LDE4NS4xLTQ3LDI4NC45LTQ3DQoJYzEwMi44LDAsMTk2LjgsMTcuNiwyODQuOSw0N2MyNi40LTI5LjQsMTMyLjItMTQzLjksMzA4LjQtMTQzLjljNzAuNSw3MC41LDM4LjIsMjYxLjQsOC44LDM1Mi41YzgyLjMsOTEuMSwxMjkuMywyMDIuNywxMjkuMywzMTcuMw0KCWMwLDI2NC40LTE4NS4xLDQ1OC4zLTU3NS43LDQ5OS40YzEwOC43LDU1LjgsMTg1LjEsMjE0LjQsMTg1LjEsMzMxLjlWMjI1NmMwLDguOC0yLjksMTcuNi0yLjksMjYuNA0KCUMyMDIxLDIxMjMuOCwyMzUwLDE2ODkuMSwyMzUwLDExNzVDMjM1MCw1MjUuOCwxODI0LjIsMCwxMTc1LDBMMTE3NSwweiIvPg0KPC9zdmc+DQo="
+}

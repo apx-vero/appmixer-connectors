@@ -93,7 +93,40 @@ const resolveApiDomain = ({ apiDomain, region } = {}) => {
     return trustedServer(apiDomain, API_DOMAINS) || apiEndpoint(region);
 };
 
+/**
+ * All data centers in the order to try them when the account's data center is not known: the one
+ * the hint points to first (region, accounts server or API host), the rest in DATA_CENTERS order.
+ * The hint only orders the list, it is never trusted on its own: in the Auth Hub the redirect
+ * callback, the code exchange and the profile request may run in different processes, so a hint
+ * kept in memory can be missing or belong to another account being connected at the same time.
+ * @param {{ region?: String, accountsServer?: String, apiDomain?: String }} [hint]
+ * @returns {Array<{ region: String, accountsServer: String, apiDomain: String }>}
+ */
+const dataCenterCandidates = hint => {
+
+    const { region, accountsServer, apiDomain } = hint || {};
+    // Every data center tried sees the client secret and the code or token, so the list is walked
+    // one by one and stops at the first that answers. China goes last: it is the least likely one
+    // and the slowest to answer.
+    const all = Object.entries(DATA_CENTERS)
+        .map(([code, dc]) => ({ region: code, accountsServer: dc.accounts, apiDomain: dc.api }))
+        .sort((a, b) => (a.region === 'cn') - (b.region === 'cn'));
+    const accounts = trustedServer(accountsServer, ACCOUNTS_SERVERS);
+    const api = trustedServer(apiDomain, API_DOMAINS);
+    const hinted = all.find(dc => dc.accountsServer === accounts) ||
+        all.find(dc => dc.apiDomain === api) ||
+        all.find(dc => typeof region === 'string' && dc.region === region.toLowerCase());
+    return hinted ? [hinted, ...all.filter(dc => dc !== hinted)] : all;
+};
+
 module.exports = {
+    // accountsEndpoint and apiEndpoint are not used by this version of the connector any more. They
+    // stay exported for older copies of auth.js and of the components: this file is shared by all
+    // of them (the service version does not change), and the engine can still load an older
+    // auth.js or component next to it - the Auth Hub in particular keeps older copies around.
+    accountsEndpoint,
+    apiEndpoint,
+    dataCenterCandidates,
     resolveAccountsServer,
     resolveApiDomain,
     trustedAccountsServer: url => trustedServer(url, ACCOUNTS_SERVERS),

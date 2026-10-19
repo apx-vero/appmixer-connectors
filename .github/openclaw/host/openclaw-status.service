@@ -1,0 +1,8 @@
+[Unit]
+Description=Publish OpenClaw status JSON for the appmixer-sanity Operations page
+
+[Service]
+Type=oneshot
+Environment=XDG_RUNTIME_DIR=/run/user/0
+Environment=PATH=/usr/bin:/usr/local/bin:/bin
+ExecStart=/usr/bin/node /root/openclaw-status/build-status.js

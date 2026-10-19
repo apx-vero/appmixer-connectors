@@ -253,6 +253,11 @@ that instance (run from an appmixer-sanity checkout):
 node --env-file=.env scripts/publish-integration.js <path>/copilot-review-dispatch.json --dry-run
 ```
 
+Running instances of the pipeline integrations are created and patched with `tools/` (no wizard
+needed): `tools/new-instance.mjs` clones a template, binds the accounts and fills the `<PLACEHOLDER>`s
+from a local secrets file; `tools/patch-instance.mjs` copies Code Block code and AI Agent instructions
+into a running instance. See `.github/openclaw/host/README.md` for the instances in use.
+
 How to turn another flow into an integration — the JSON format, wizard fields,
 publishing, activating and retiring the old flow:
 [appmixer-sanity CLAUDE.md → Migrating a flow to an integration](https://github.com/vtalas/appmixer-sanity/blob/main/CLAUDE.md#migrating-a-flow-to-an-integration).

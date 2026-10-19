@@ -1,0 +1,65 @@
+{
+  "hooks": {
+    "enabled": true,
+    "token": "<OPENCLAW_HOOK_TOKEN>",
+    "path": "/hooks",
+    "allowedAgentIds": [
+      "vero",
+      "maya"
+    ],
+    "allowRequestSessionKey": true,
+    "mappings": [
+      {
+        "id": "vero-mention",
+        "match": {
+          "path": "vero-mention"
+        },
+        "action": "agent",
+        "agentId": "vero",
+        "model": "anthropic/claude-opus-5-5",
+        "transform": {
+          "module": "vero-mention.mjs"
+        }
+      },
+      {
+        "id": "vero-testing",
+        "match": {
+          "path": "vero-testing"
+        },
+        "action": "agent",
+        "agentId": "vero",
+        "model": "anthropic/claude-haiku-4-5-20251001",
+        "transform": {
+          "module": "vero-testing.mjs"
+        }
+      },
+      {
+        "id": "maya-docs",
+        "match": {
+          "path": "maya-docs"
+        },
+        "action": "agent",
+        "agentId": "maya",
+        "model": "anthropic/claude-opus-5-5",
+        "transform": {
+          "module": "maya-docs.mjs"
+        }
+      },
+      {
+        "id": "vero-fix",
+        "match": {
+          "path": "vero-fix"
+        },
+        "action": "agent",
+        "agentId": "vero",
+        "model": "anthropic/claude-opus-5-5",
+        "transform": {
+          "module": "vero-fix.mjs"
+        }
+      }
+    ],
+    "allowedSessionKeyPrefixes": [
+      "hook:"
+    ]
+  }
+}

@@ -1,0 +1,163 @@
+{
+    "name": "Demo SurveyMonkey - New Response Alert",
+    "type": "automation",
+    "wizard": {
+        "fields": []
+    },
+    "notes": {
+        "a51c0de0-5e11-4c01-9a01-0000000000aa": {
+            "x": 64,
+            "y": 64,
+            "width": 704,
+            "height": 208,
+            "content": "## 📋 New Response Alert\n\nWhenever a respondent **completes a survey**, the flow reads the survey (title, number of responses so far) and e-mails the team the **questions and answers** with a link to the response in SurveyMonkey Analyze.\n\n- Connect your SurveyMonkey account and pick the survey in the **New Response** trigger.\n- Change the recipient in the **Notify the team** step (demo sends to `test@appmixer.com`).\n- Answers need the *View Response Details* permission of your SurveyMonkey plan."
+        }
+    },
+    "flow": {
+        "a51c0de0-5e11-4c01-9a01-000000000001": {
+            "type": "appmixer.surveymonkey.core.NewResponse",
+            "label": "New Response",
+            "x": 64,
+            "y": 320,
+            "version": "1.0.0",
+            "source": {},
+            "config": {
+                "properties": {
+                    "surveyId": "529066657",
+                    "simple": true
+                }
+            }
+        },
+        "a51c0de0-5e11-4c01-9a01-000000000002": {
+            "type": "appmixer.surveymonkey.core.GetSurvey",
+            "label": "Get the survey",
+            "x": 272,
+            "y": 320,
+            "version": "1.0.0",
+            "source": {
+                "in": {
+                    "a51c0de0-5e11-4c01-9a01-000000000001": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "transform": {
+                    "in": {
+                        "a51c0de0-5e11-4c01-9a01-000000000001": {
+                            "out": {
+                                "type": "json2new",
+                                "modifiers": {
+                                    "surveyId": {
+                                        "survey-id": {
+                                            "variable": "$.a51c0de0-5e11-4c01-9a01-000000000001.out.survey_id",
+                                            "functions": []
+                                        }
+                                    }
+                                },
+                                "lambda": {
+                                    "surveyId": "{{{survey-id}}}"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "a51c0de0-5e11-4c01-9a01-000000000003": {
+            "type": "appmixer.utils.email.SendEmail",
+            "label": "Notify the team",
+            "x": 480,
+            "y": 320,
+            "version": "1.1.1",
+            "source": {
+                "in": {
+                    "a51c0de0-5e11-4c01-9a01-000000000002": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "transform": {
+                    "in": {
+                        "a51c0de0-5e11-4c01-9a01-000000000002": {
+                            "out": {
+                                "type": "json2new",
+                                "modifiers": {
+                                    "to": {},
+                                    "subject": {
+                                        "s-title": {
+                                            "variable": "$.a51c0de0-5e11-4c01-9a01-000000000002.out.title",
+                                            "functions": []
+                                        }
+                                    },
+                                    "html": {
+                                        "h-title": {
+                                            "variable": "$.a51c0de0-5e11-4c01-9a01-000000000002.out.title",
+                                            "functions": []
+                                        },
+                                        "h-count": {
+                                            "variable": "$.a51c0de0-5e11-4c01-9a01-000000000002.out.response_count",
+                                            "functions": []
+                                        },
+                                        "h-id": {
+                                            "variable": "$.a51c0de0-5e11-4c01-9a01-000000000001.out.id",
+                                            "functions": []
+                                        },
+                                        "h-status": {
+                                            "variable": "$.a51c0de0-5e11-4c01-9a01-000000000001.out.response_status",
+                                            "functions": []
+                                        },
+                                        "h-date": {
+                                            "variable": "$.a51c0de0-5e11-4c01-9a01-000000000001.out.date_modified",
+                                            "functions": []
+                                        },
+                                        "h-time": {
+                                            "variable": "$.a51c0de0-5e11-4c01-9a01-000000000001.out.total_time",
+                                            "functions": []
+                                        },
+                                        "h-questions": {
+                                            "variable": "$.a51c0de0-5e11-4c01-9a01-000000000001.out.pages",
+                                            "functions": [
+                                                {
+                                                    "name": "g_jsonPath",
+                                                    "params": [
+                                                        {
+                                                            "value": "$..heading"
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        "h-answers": {
+                                            "variable": "$.a51c0de0-5e11-4c01-9a01-000000000001.out.pages",
+                                            "functions": [
+                                                {
+                                                    "name": "g_jsonPath",
+                                                    "params": [
+                                                        {
+                                                            "value": "$..simple_text"
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        "h-analyze": {
+                                            "variable": "$.a51c0de0-5e11-4c01-9a01-000000000001.out.analyze_url",
+                                            "functions": []
+                                        }
+                                    }
+                                },
+                                "lambda": {
+                                    "to": "test@appmixer.com",
+                                    "subject": "New survey response - {{{s-title}}}",
+                                    "html": "<div style=\"font-family:Arial,sans-serif;max-width:600px;color:#222\"><h2 style=\"color:#00BF6F\">New survey response</h2><p>A respondent has just completed the survey <b>{{{h-title}}}</b>.</p><table style=\"border-collapse:collapse;width:100%\"><tr><td style=\"padding:6px 12px;border:1px solid #eee;background:#fafafa\"><b>Survey</b></td><td style=\"padding:6px 12px;border:1px solid #eee\">{{{h-title}}}</td></tr><tr><td style=\"padding:6px 12px;border:1px solid #eee;background:#fafafa\"><b>Responses so far</b></td><td style=\"padding:6px 12px;border:1px solid #eee\">{{{h-count}}}</td></tr><tr><td style=\"padding:6px 12px;border:1px solid #eee;background:#fafafa\"><b>Response ID</b></td><td style=\"padding:6px 12px;border:1px solid #eee\">{{{h-id}}}</td></tr><tr><td style=\"padding:6px 12px;border:1px solid #eee;background:#fafafa\"><b>Status</b></td><td style=\"padding:6px 12px;border:1px solid #eee\">{{{h-status}}}</td></tr><tr><td style=\"padding:6px 12px;border:1px solid #eee;background:#fafafa\"><b>Completed at</b></td><td style=\"padding:6px 12px;border:1px solid #eee\">{{{h-date}}}</td></tr><tr><td style=\"padding:6px 12px;border:1px solid #eee;background:#fafafa\"><b>Time spent (seconds)</b></td><td style=\"padding:6px 12px;border:1px solid #eee\">{{{h-time}}}</td></tr><tr><td style=\"padding:6px 12px;border:1px solid #eee;background:#fafafa\"><b>Questions</b></td><td style=\"padding:6px 12px;border:1px solid #eee\">{{{h-questions}}}</td></tr><tr><td style=\"padding:6px 12px;border:1px solid #eee;background:#fafafa\"><b>Answers</b></td><td style=\"padding:6px 12px;border:1px solid #eee\">{{{h-answers}}}</td></tr><tr><td style=\"padding:6px 12px;border:1px solid #eee;background:#fafafa\"><b>Open in SurveyMonkey</b></td><td style=\"padding:6px 12px;border:1px solid #eee\"><a href=\"{{{h-analyze}}}\">View the response</a></td></tr></table><p style=\"color:#888;font-size:12px\">Sent by the Appmixer demo flow “Demo SurveyMonkey - New Response Alert”.</p></div>"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

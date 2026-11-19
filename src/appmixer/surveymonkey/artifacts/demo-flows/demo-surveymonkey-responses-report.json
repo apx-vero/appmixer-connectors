@@ -1,0 +1,175 @@
+{
+    "name": "Demo SurveyMonkey - Responses Report",
+    "type": "automation",
+    "wizard": {
+        "fields": []
+    },
+    "notes": {
+        "a51c0de0-5e11-4c02-9a02-0000000000aa": {
+            "x": 64,
+            "y": 64,
+            "width": 912,
+            "height": 208,
+            "content": "## 📊 Responses Report\n\nOn start, the flow reads a survey, **exports all its responses to a CSV file** and e-mails the file to the team together with the survey totals and links to the results in SurveyMonkey.\n\n- Connect your SurveyMonkey account and pick the survey in the **Get the survey** step.\n- Change the recipient in the **E-mail the report** step (demo sends to `test@appmixer.com`).\n- Replace **On Start** with a **Scheduler** trigger to send the report every week."
+        }
+    },
+    "flow": {
+        "a51c0de0-5e11-4c02-9a02-000000000001": {
+            "type": "appmixer.utils.controls.OnStart",
+            "label": "On start",
+            "x": 64,
+            "y": 320,
+            "source": {},
+            "config": {}
+        },
+        "a51c0de0-5e11-4c02-9a02-000000000002": {
+            "type": "appmixer.surveymonkey.core.GetSurvey",
+            "label": "Get the survey",
+            "x": 272,
+            "y": 320,
+            "version": "1.0.0",
+            "source": {
+                "in": {
+                    "a51c0de0-5e11-4c02-9a02-000000000001": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "transform": {
+                    "in": {
+                        "a51c0de0-5e11-4c02-9a02-000000000001": {
+                            "out": {
+                                "type": "json2new",
+                                "modifiers": {
+                                    "surveyId": {}
+                                },
+                                "lambda": {
+                                    "surveyId": "529066657"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "a51c0de0-5e11-4c02-9a02-000000000003": {
+            "type": "appmixer.surveymonkey.core.ListResponses",
+            "label": "Export responses to CSV",
+            "x": 480,
+            "y": 320,
+            "version": "1.0.0",
+            "source": {
+                "in": {
+                    "a51c0de0-5e11-4c02-9a02-000000000002": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "transform": {
+                    "in": {
+                        "a51c0de0-5e11-4c02-9a02-000000000002": {
+                            "out": {
+                                "type": "json2new",
+                                "modifiers": {
+                                    "surveyId": {
+                                        "survey-id": {
+                                            "variable": "$.a51c0de0-5e11-4c02-9a02-000000000002.out.id",
+                                            "functions": []
+                                        }
+                                    },
+                                    "simple": {},
+                                    "outputType": {}
+                                },
+                                "lambda": {
+                                    "surveyId": "{{{survey-id}}}",
+                                    "simple": true,
+                                    "outputType": "file"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "a51c0de0-5e11-4c02-9a02-000000000004": {
+            "type": "appmixer.utils.email.SendEmail",
+            "label": "E-mail the report",
+            "x": 688,
+            "y": 320,
+            "version": "1.1.1",
+            "source": {
+                "in": {
+                    "a51c0de0-5e11-4c02-9a02-000000000003": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "transform": {
+                    "in": {
+                        "a51c0de0-5e11-4c02-9a02-000000000003": {
+                            "out": {
+                                "type": "json2new",
+                                "modifiers": {
+                                    "to": {},
+                                    "subject": {
+                                        "s-title": {
+                                            "variable": "$.a51c0de0-5e11-4c02-9a02-000000000002.out.title",
+                                            "functions": []
+                                        }
+                                    },
+                                    "html": {
+                                        "h-title": {
+                                            "variable": "$.a51c0de0-5e11-4c02-9a02-000000000002.out.title",
+                                            "functions": []
+                                        },
+                                        "h-responses": {
+                                            "variable": "$.a51c0de0-5e11-4c02-9a02-000000000002.out.response_count",
+                                            "functions": []
+                                        },
+                                        "h-questions": {
+                                            "variable": "$.a51c0de0-5e11-4c02-9a02-000000000002.out.question_count",
+                                            "functions": []
+                                        },
+                                        "h-modified": {
+                                            "variable": "$.a51c0de0-5e11-4c02-9a02-000000000002.out.date_modified",
+                                            "functions": []
+                                        },
+                                        "h-analyze": {
+                                            "variable": "$.a51c0de0-5e11-4c02-9a02-000000000002.out.analyze_url",
+                                            "functions": []
+                                        },
+                                        "h-summary": {
+                                            "variable": "$.a51c0de0-5e11-4c02-9a02-000000000002.out.summary_url",
+                                            "functions": []
+                                        }
+                                    },
+                                    "attachments": {
+                                        "a-file": {
+                                            "variable": "$.a51c0de0-5e11-4c02-9a02-000000000003.out.fileId",
+                                            "functions": []
+                                        }
+                                    }
+                                },
+                                "lambda": {
+                                    "to": "test@appmixer.com",
+                                    "subject": "Survey report - {{{s-title}}}",
+                                    "html": "<div style=\"font-family:Arial,sans-serif;max-width:600px;color:#222\"><h2 style=\"color:#00BF6F\">Survey responses report</h2><p>The responses of the survey <b>{{{h-title}}}</b> are attached as a CSV file.</p><table style=\"border-collapse:collapse;width:100%\"><tr><td style=\"padding:6px 12px;border:1px solid #eee;background:#fafafa\"><b>Survey</b></td><td style=\"padding:6px 12px;border:1px solid #eee\">{{{h-title}}}</td></tr><tr><td style=\"padding:6px 12px;border:1px solid #eee;background:#fafafa\"><b>Responses</b></td><td style=\"padding:6px 12px;border:1px solid #eee\">{{{h-responses}}}</td></tr><tr><td style=\"padding:6px 12px;border:1px solid #eee;background:#fafafa\"><b>Questions</b></td><td style=\"padding:6px 12px;border:1px solid #eee\">{{{h-questions}}}</td></tr><tr><td style=\"padding:6px 12px;border:1px solid #eee;background:#fafafa\"><b>Last modified</b></td><td style=\"padding:6px 12px;border:1px solid #eee\">{{{h-modified}}}</td></tr><tr><td style=\"padding:6px 12px;border:1px solid #eee;background:#fafafa\"><b>Analyze</b></td><td style=\"padding:6px 12px;border:1px solid #eee\"><a href=\"{{{h-analyze}}}\">Open the results</a></td></tr><tr><td style=\"padding:6px 12px;border:1px solid #eee;background:#fafafa\"><b>Summary</b></td><td style=\"padding:6px 12px;border:1px solid #eee\"><a href=\"{{{h-summary}}}\">Open the summary</a></td></tr></table><p style=\"color:#888;font-size:12px\">Sent by the Appmixer demo flow “Demo SurveyMonkey - Responses Report”.</p></div>",
+                                    "attachments": {
+                                        "ADD": [
+                                            {
+                                                "fileId": "{{{a-file}}}"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

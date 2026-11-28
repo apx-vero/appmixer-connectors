@@ -1,0 +1,181 @@
+{
+    "name": "E2E DeepL - improve text",
+    "description": "Improves an English text with DeepL Write.",
+    "flow": {
+        "6eb382a5-e59e-4ff5-a086-1d5132640e4a": {
+            "type": "appmixer.utils.controls.OnStart",
+            "x": 64,
+            "y": 16,
+            "version": "1.0.0",
+            "source": {},
+            "config": {},
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "stopFlow"
+            }
+        },
+        "465b819e-f7a5-4c4b-b949-0a9200b44783": {
+            "type": "appmixer.deepl.core.ImproveText",
+            "x": 272,
+            "y": 16,
+            "version": "1.0.0",
+            "source": {
+                "in": {
+                    "6eb382a5-e59e-4ff5-a086-1d5132640e4a": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "transform": {
+                    "in": {
+                        "6eb382a5-e59e-4ff5-a086-1d5132640e4a": {
+                            "out": {
+                                "type": "json2new",
+                                "modifiers": {
+                                    "text": {},
+                                    "targetLang": {},
+                                    "writingStyle": {}
+                                },
+                                "lambda": {
+                                    "text": "this is a example sentence to imprve",
+                                    "targetLang": "en-US",
+                                    "writingStyle": "prefer_business"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "stopFlow"
+            }
+        },
+        "ab99da13-4cfa-4ee4-a567-7b4ef0ba78e1": {
+            "type": "appmixer.utils.test.Assert",
+            "x": 480,
+            "y": 16,
+            "version": "1.0.0",
+            "source": {
+                "in": {
+                    "465b819e-f7a5-4c4b-b949-0a9200b44783": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "transform": {
+                    "in": {
+                        "465b819e-f7a5-4c4b-b949-0a9200b44783": {
+                            "out": {
+                                "type": "json2new",
+                                "modifiers": {
+                                    "expression": {
+                                        "91379201-426d-4193-863e-6eff6fc13f96": {
+                                            "variable": "$.465b819e-f7a5-4c4b-b949-0a9200b44783.out.text",
+                                            "functions": []
+                                        }
+                                    }
+                                },
+                                "lambda": {
+                                    "expression": {
+                                        "AND": [
+                                            {
+                                                "field": "{{{91379201-426d-4193-863e-6eff6fc13f96}}}",
+                                                "assertion": "regex",
+                                                "regex": "[Ss]entence"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "stopFlow"
+            }
+        },
+        "4718932c-0e44-4db0-9cd7-0f079a2f65b6": {
+            "type": "appmixer.utils.test.AfterAll",
+            "x": 688,
+            "y": 16,
+            "version": "1.0.0",
+            "source": {
+                "in": {
+                    "ab99da13-4cfa-4ee4-a567-7b4ef0ba78e1": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "properties": {
+                    "timeout": 180
+                }
+            },
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "stopFlow"
+            }
+        },
+        "7b0ac556-b572-4e4b-a958-d9a3c2dd3212": {
+            "type": "appmixer.utils.test.ProcessE2EResults",
+            "x": 896,
+            "y": 16,
+            "version": "1.0.0",
+            "source": {
+                "in": {
+                    "4718932c-0e44-4db0-9cd7-0f079a2f65b6": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "properties": {
+                    "successStoreId": "64f6f1f9193228000754082f",
+                    "failedStoreId": "64f6f1f0193228000754082e"
+                },
+                "transform": {
+                    "in": {
+                        "4718932c-0e44-4db0-9cd7-0f079a2f65b6": {
+                            "out": {
+                                "type": "json2new",
+                                "modifiers": {
+                                    "recipients": {},
+                                    "testCase": {},
+                                    "result": {
+                                        "d3b665fe-4062-4cc8-ae89-515b798f3476": {
+                                            "variable": "$.4718932c-0e44-4db0-9cd7-0f079a2f65b6.out",
+                                            "functions": []
+                                        }
+                                    }
+                                },
+                                "lambda": {
+                                    "recipients": "test@appmixer.ai",
+                                    "testCase": "E2E DeepL - improve text",
+                                    "result": "{{{d3b665fe-4062-4cc8-ae89-515b798f3476}}}"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "stopFlow"
+            }
+        }
+    },
+    "notes": {
+        "d3937cfb-6cfb-4a59-b023-e0c293587de8": {
+            "x": 64,
+            "y": 176,
+            "width": 672,
+            "height": 160,
+            "content": "## ⚠️ Plan assumption\n\nDeepL Write (`/v2/write/rephrase`) may be limited to DeepL API Pro. On a Free key the component can fail with 403/456; that is a plan limit, not a connector bug."
+        }
+    }
+}

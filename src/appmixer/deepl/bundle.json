@@ -1,0 +1,9 @@
+{
+    "name": "appmixer.deepl",
+    "version": "1.0.0",
+    "changelog": {
+        "1.0.0": [
+            "Initial release: translate text and documents, improve text with DeepL Write, find languages, read usage, manage glossaries (create, get, get entries, find, update, replace a dictionary, delete), and make arbitrary API calls."
+        ]
+    }
+}

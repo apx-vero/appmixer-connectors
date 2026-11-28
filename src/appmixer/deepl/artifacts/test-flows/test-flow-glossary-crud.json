@@ -1,0 +1,830 @@
+{
+    "name": "E2E DeepL - glossary CRUD",
+    "description": "Creates a glossary, reads, finds, renames it, replaces its en→de dictionary, reads the entries, translates with it and deletes it.",
+    "flow": {
+        "67e7d99d-0bdf-4a0a-b66a-51800698ed07": {
+            "type": "appmixer.utils.controls.OnStart",
+            "x": 64,
+            "y": 16,
+            "version": "1.0.0",
+            "source": {},
+            "config": {},
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "stopFlow"
+            }
+        },
+        "2620c711-b18c-4a1e-bc95-f89d28a7f7b6": {
+            "type": "appmixer.deepl.core.CreateGlossary",
+            "x": 272,
+            "y": 16,
+            "version": "1.0.0",
+            "source": {
+                "in": {
+                    "67e7d99d-0bdf-4a0a-b66a-51800698ed07": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "transform": {
+                    "in": {
+                        "67e7d99d-0bdf-4a0a-b66a-51800698ed07": {
+                            "out": {
+                                "type": "json2new",
+                                "modifiers": {
+                                    "name": {},
+                                    "sourceLang": {},
+                                    "targetLang": {},
+                                    "entries": {},
+                                    "entriesFormat": {}
+                                },
+                                "lambda": {
+                                    "name": "E2E DeepL Glossary",
+                                    "sourceLang": "en",
+                                    "targetLang": "de",
+                                    "entries": "Appmixer\tAppmixer",
+                                    "entriesFormat": "tsv"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "stopFlow"
+            }
+        },
+        "71a6e475-2eed-4d45-b997-9dcddebd6202": {
+            "type": "appmixer.utils.test.Assert",
+            "x": 480,
+            "y": 16,
+            "version": "1.0.0",
+            "source": {
+                "in": {
+                    "2620c711-b18c-4a1e-bc95-f89d28a7f7b6": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "transform": {
+                    "in": {
+                        "2620c711-b18c-4a1e-bc95-f89d28a7f7b6": {
+                            "out": {
+                                "type": "json2new",
+                                "modifiers": {
+                                    "expression": {
+                                        "1e8ea095-6796-4d83-9bc4-8d9b0b8ff82c": {
+                                            "variable": "$.2620c711-b18c-4a1e-bc95-f89d28a7f7b6.out.glossary_id",
+                                            "functions": []
+                                        },
+                                        "58ed28f7-f83d-4ad8-8f2d-7fe739e8b344": {
+                                            "variable": "$.2620c711-b18c-4a1e-bc95-f89d28a7f7b6.out.name",
+                                            "functions": []
+                                        }
+                                    }
+                                },
+                                "lambda": {
+                                    "expression": {
+                                        "AND": [
+                                            {
+                                                "field": "{{{1e8ea095-6796-4d83-9bc4-8d9b0b8ff82c}}}",
+                                                "assertion": "notEmpty"
+                                            },
+                                            {
+                                                "field": "{{{58ed28f7-f83d-4ad8-8f2d-7fe739e8b344}}}",
+                                                "assertion": "equal",
+                                                "expected": "E2E DeepL Glossary"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "stopFlow"
+            }
+        },
+        "358fdea2-8c5a-463f-99c9-46a66d4a00df": {
+            "type": "appmixer.deepl.core.GetGlossary",
+            "x": 480,
+            "y": 144,
+            "version": "1.0.0",
+            "source": {
+                "in": {
+                    "2620c711-b18c-4a1e-bc95-f89d28a7f7b6": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "transform": {
+                    "in": {
+                        "2620c711-b18c-4a1e-bc95-f89d28a7f7b6": {
+                            "out": {
+                                "type": "json2new",
+                                "modifiers": {
+                                    "glossaryId": {
+                                        "bf9cb1c6-71c8-4a12-81fa-41632a61f681": {
+                                            "variable": "$.2620c711-b18c-4a1e-bc95-f89d28a7f7b6.out.glossary_id",
+                                            "functions": []
+                                        }
+                                    }
+                                },
+                                "lambda": {
+                                    "glossaryId": "{{{bf9cb1c6-71c8-4a12-81fa-41632a61f681}}}"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "stopFlow"
+            }
+        },
+        "b4b2f80d-113a-4f96-ace0-ac80bc3dc6d7": {
+            "type": "appmixer.utils.test.Assert",
+            "x": 688,
+            "y": 144,
+            "version": "1.0.0",
+            "source": {
+                "in": {
+                    "358fdea2-8c5a-463f-99c9-46a66d4a00df": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "transform": {
+                    "in": {
+                        "358fdea2-8c5a-463f-99c9-46a66d4a00df": {
+                            "out": {
+                                "type": "json2new",
+                                "modifiers": {
+                                    "expression": {
+                                        "f5fc66a5-83f3-42f4-adc8-301721beffb2": {
+                                            "variable": "$.358fdea2-8c5a-463f-99c9-46a66d4a00df.out.name",
+                                            "functions": []
+                                        }
+                                    }
+                                },
+                                "lambda": {
+                                    "expression": {
+                                        "AND": [
+                                            {
+                                                "field": "{{{f5fc66a5-83f3-42f4-adc8-301721beffb2}}}",
+                                                "assertion": "equal",
+                                                "expected": "E2E DeepL Glossary"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "stopFlow"
+            }
+        },
+        "4620dd81-beee-4331-b9b0-66865e9780c7": {
+            "type": "appmixer.deepl.core.FindGlossaries",
+            "x": 688,
+            "y": 272,
+            "version": "1.0.0",
+            "source": {
+                "in": {
+                    "358fdea2-8c5a-463f-99c9-46a66d4a00df": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "transform": {
+                    "in": {
+                        "358fdea2-8c5a-463f-99c9-46a66d4a00df": {
+                            "out": {
+                                "type": "json2new",
+                                "modifiers": {
+                                    "name": {},
+                                    "outputType": {}
+                                },
+                                "lambda": {
+                                    "name": "E2E DeepL Glossary",
+                                    "outputType": "first"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "stopFlow"
+            }
+        },
+        "e764cedb-5ca9-4247-aa5b-d5b1701a3c45": {
+            "type": "appmixer.utils.test.Assert",
+            "x": 896,
+            "y": 272,
+            "version": "1.0.0",
+            "source": {
+                "in": {
+                    "4620dd81-beee-4331-b9b0-66865e9780c7": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "transform": {
+                    "in": {
+                        "4620dd81-beee-4331-b9b0-66865e9780c7": {
+                            "out": {
+                                "type": "json2new",
+                                "modifiers": {
+                                    "expression": {
+                                        "49562609-5a6f-4646-9ba5-1ffbbb3b7aab": {
+                                            "variable": "$.4620dd81-beee-4331-b9b0-66865e9780c7.out.glossary_id",
+                                            "functions": []
+                                        },
+                                        "1092b7fb-9c56-4f67-81c0-6995f41bc5e2": {
+                                            "variable": "$.4620dd81-beee-4331-b9b0-66865e9780c7.out.name",
+                                            "functions": []
+                                        }
+                                    }
+                                },
+                                "lambda": {
+                                    "expression": {
+                                        "AND": [
+                                            {
+                                                "field": "{{{49562609-5a6f-4646-9ba5-1ffbbb3b7aab}}}",
+                                                "assertion": "notEmpty"
+                                            },
+                                            {
+                                                "field": "{{{1092b7fb-9c56-4f67-81c0-6995f41bc5e2}}}",
+                                                "assertion": "regex",
+                                                "regex": "^E2E DeepL Glossary"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "stopFlow"
+            }
+        },
+        "89cbae63-2869-44e2-a3af-bec0710cdcaf": {
+            "type": "appmixer.deepl.core.UpdateGlossary",
+            "x": 896,
+            "y": 400,
+            "version": "1.0.0",
+            "source": {
+                "in": {
+                    "4620dd81-beee-4331-b9b0-66865e9780c7": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "transform": {
+                    "in": {
+                        "4620dd81-beee-4331-b9b0-66865e9780c7": {
+                            "out": {
+                                "type": "json2new",
+                                "modifiers": {
+                                    "glossaryId": {
+                                        "4e79c10e-7b6a-4c74-83ec-df2d155ce5f6": {
+                                            "variable": "$.2620c711-b18c-4a1e-bc95-f89d28a7f7b6.out.glossary_id",
+                                            "functions": []
+                                        }
+                                    },
+                                    "name": {}
+                                },
+                                "lambda": {
+                                    "glossaryId": "{{{4e79c10e-7b6a-4c74-83ec-df2d155ce5f6}}}",
+                                    "name": "E2E DeepL Glossary Renamed"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "stopFlow"
+            }
+        },
+        "20d161ac-fd55-4810-8375-6fc718a6a222": {
+            "type": "appmixer.deepl.core.GetGlossary",
+            "x": 1104,
+            "y": 400,
+            "version": "1.0.0",
+            "source": {
+                "in": {
+                    "89cbae63-2869-44e2-a3af-bec0710cdcaf": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "transform": {
+                    "in": {
+                        "89cbae63-2869-44e2-a3af-bec0710cdcaf": {
+                            "out": {
+                                "type": "json2new",
+                                "modifiers": {
+                                    "glossaryId": {
+                                        "e1dfaf4e-6272-4a81-9311-f09696e8019d": {
+                                            "variable": "$.2620c711-b18c-4a1e-bc95-f89d28a7f7b6.out.glossary_id",
+                                            "functions": []
+                                        }
+                                    }
+                                },
+                                "lambda": {
+                                    "glossaryId": "{{{e1dfaf4e-6272-4a81-9311-f09696e8019d}}}"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "stopFlow"
+            }
+        },
+        "b2bb4dad-758c-45c6-b6e1-9c04cbce4215": {
+            "type": "appmixer.utils.test.Assert",
+            "x": 1312,
+            "y": 400,
+            "version": "1.0.0",
+            "source": {
+                "in": {
+                    "20d161ac-fd55-4810-8375-6fc718a6a222": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "transform": {
+                    "in": {
+                        "20d161ac-fd55-4810-8375-6fc718a6a222": {
+                            "out": {
+                                "type": "json2new",
+                                "modifiers": {
+                                    "expression": {
+                                        "72cd0f26-040f-4fd0-ae5b-e1255e0ea409": {
+                                            "variable": "$.20d161ac-fd55-4810-8375-6fc718a6a222.out.name",
+                                            "functions": []
+                                        }
+                                    }
+                                },
+                                "lambda": {
+                                    "expression": {
+                                        "AND": [
+                                            {
+                                                "field": "{{{72cd0f26-040f-4fd0-ae5b-e1255e0ea409}}}",
+                                                "assertion": "equal",
+                                                "expected": "E2E DeepL Glossary Renamed"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "stopFlow"
+            }
+        },
+        "5f65fcb0-4d12-404b-b2e0-7ca0eb6425a4": {
+            "type": "appmixer.deepl.core.ReplaceGlossaryDictionary",
+            "x": 1312,
+            "y": 528,
+            "version": "1.0.0",
+            "source": {
+                "in": {
+                    "20d161ac-fd55-4810-8375-6fc718a6a222": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "transform": {
+                    "in": {
+                        "20d161ac-fd55-4810-8375-6fc718a6a222": {
+                            "out": {
+                                "type": "json2new",
+                                "modifiers": {
+                                    "glossaryId": {
+                                        "a71a82b3-9b32-44cb-bf55-75b6992ed161": {
+                                            "variable": "$.2620c711-b18c-4a1e-bc95-f89d28a7f7b6.out.glossary_id",
+                                            "functions": []
+                                        }
+                                    },
+                                    "sourceLang": {},
+                                    "targetLang": {},
+                                    "entries": {},
+                                    "entriesFormat": {}
+                                },
+                                "lambda": {
+                                    "glossaryId": "{{{a71a82b3-9b32-44cb-bf55-75b6992ed161}}}",
+                                    "sourceLang": "en",
+                                    "targetLang": "de",
+                                    "entries": "Hello\tServus\nWorld\tWelt",
+                                    "entriesFormat": "tsv"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "stopFlow"
+            }
+        },
+        "a10585e4-66c9-4dbd-8859-50ac3ebbad2d": {
+            "type": "appmixer.utils.test.Assert",
+            "x": 1520,
+            "y": 528,
+            "version": "1.0.0",
+            "source": {
+                "in": {
+                    "5f65fcb0-4d12-404b-b2e0-7ca0eb6425a4": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "transform": {
+                    "in": {
+                        "5f65fcb0-4d12-404b-b2e0-7ca0eb6425a4": {
+                            "out": {
+                                "type": "json2new",
+                                "modifiers": {
+                                    "expression": {
+                                        "8682c45e-b111-49ea-bf63-aa8f495bafdc": {
+                                            "variable": "$.5f65fcb0-4d12-404b-b2e0-7ca0eb6425a4.out.entry_count",
+                                            "functions": []
+                                        }
+                                    }
+                                },
+                                "lambda": {
+                                    "expression": {
+                                        "AND": [
+                                            {
+                                                "field": "{{{8682c45e-b111-49ea-bf63-aa8f495bafdc}}}",
+                                                "assertion": "equal",
+                                                "expected": "2"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "stopFlow"
+            }
+        },
+        "7a9e7370-bb72-4fda-87be-914555cdcc7e": {
+            "type": "appmixer.deepl.core.GetGlossaryEntries",
+            "x": 1520,
+            "y": 656,
+            "version": "1.0.0",
+            "source": {
+                "in": {
+                    "5f65fcb0-4d12-404b-b2e0-7ca0eb6425a4": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "transform": {
+                    "in": {
+                        "5f65fcb0-4d12-404b-b2e0-7ca0eb6425a4": {
+                            "out": {
+                                "type": "json2new",
+                                "modifiers": {
+                                    "glossaryId": {
+                                        "22c9eca6-0fc4-453e-822f-74bbe1ed7793": {
+                                            "variable": "$.2620c711-b18c-4a1e-bc95-f89d28a7f7b6.out.glossary_id",
+                                            "functions": []
+                                        }
+                                    },
+                                    "sourceLang": {},
+                                    "targetLang": {}
+                                },
+                                "lambda": {
+                                    "glossaryId": "{{{22c9eca6-0fc4-453e-822f-74bbe1ed7793}}}",
+                                    "sourceLang": "en",
+                                    "targetLang": "de"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "stopFlow"
+            }
+        },
+        "db81f80d-4501-4421-9830-4f18ada1f938": {
+            "type": "appmixer.utils.test.Assert",
+            "x": 1728,
+            "y": 656,
+            "version": "1.0.0",
+            "source": {
+                "in": {
+                    "7a9e7370-bb72-4fda-87be-914555cdcc7e": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "transform": {
+                    "in": {
+                        "7a9e7370-bb72-4fda-87be-914555cdcc7e": {
+                            "out": {
+                                "type": "json2new",
+                                "modifiers": {
+                                    "expression": {
+                                        "929ec9f5-4333-45bf-9800-43f4f7753217": {
+                                            "variable": "$.7a9e7370-bb72-4fda-87be-914555cdcc7e.out.entries",
+                                            "functions": []
+                                        }
+                                    }
+                                },
+                                "lambda": {
+                                    "expression": {
+                                        "AND": [
+                                            {
+                                                "field": "{{{929ec9f5-4333-45bf-9800-43f4f7753217}}}",
+                                                "assertion": "regex",
+                                                "regex": "Servus"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "stopFlow"
+            }
+        },
+        "107febe8-53bf-4fd6-b207-159f44d5aa6d": {
+            "type": "appmixer.deepl.core.TranslateText",
+            "x": 1728,
+            "y": 784,
+            "version": "1.0.0",
+            "source": {
+                "in": {
+                    "7a9e7370-bb72-4fda-87be-914555cdcc7e": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "transform": {
+                    "in": {
+                        "7a9e7370-bb72-4fda-87be-914555cdcc7e": {
+                            "out": {
+                                "type": "json2new",
+                                "modifiers": {
+                                    "text": {},
+                                    "sourceLang": {},
+                                    "targetLang": {},
+                                    "glossaryId": {
+                                        "320f4173-1804-48a0-8b24-18d729bb1f07": {
+                                            "variable": "$.2620c711-b18c-4a1e-bc95-f89d28a7f7b6.out.glossary_id",
+                                            "functions": []
+                                        }
+                                    }
+                                },
+                                "lambda": {
+                                    "text": "Hello",
+                                    "sourceLang": "EN",
+                                    "targetLang": "DE",
+                                    "glossaryId": "{{{320f4173-1804-48a0-8b24-18d729bb1f07}}}"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "stopFlow"
+            }
+        },
+        "c9d0b906-4114-43c1-864b-1bafb4d2c80f": {
+            "type": "appmixer.utils.test.Assert",
+            "x": 1936,
+            "y": 784,
+            "version": "1.0.0",
+            "source": {
+                "in": {
+                    "107febe8-53bf-4fd6-b207-159f44d5aa6d": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "transform": {
+                    "in": {
+                        "107febe8-53bf-4fd6-b207-159f44d5aa6d": {
+                            "out": {
+                                "type": "json2new",
+                                "modifiers": {
+                                    "expression": {
+                                        "fe903a54-65c9-43d8-8efe-f8fbb498bf83": {
+                                            "variable": "$.107febe8-53bf-4fd6-b207-159f44d5aa6d.out.text",
+                                            "functions": []
+                                        }
+                                    }
+                                },
+                                "lambda": {
+                                    "expression": {
+                                        "AND": [
+                                            {
+                                                "field": "{{{fe903a54-65c9-43d8-8efe-f8fbb498bf83}}}",
+                                                "assertion": "regex",
+                                                "regex": "Servus"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "stopFlow"
+            }
+        },
+        "56e83560-9a95-42bc-ad5e-139669dc268d": {
+            "type": "appmixer.utils.test.AfterAll",
+            "x": 2144,
+            "y": 784,
+            "version": "1.0.0",
+            "source": {
+                "in": {
+                    "71a6e475-2eed-4d45-b997-9dcddebd6202": [
+                        "out"
+                    ],
+                    "b4b2f80d-113a-4f96-ace0-ac80bc3dc6d7": [
+                        "out"
+                    ],
+                    "e764cedb-5ca9-4247-aa5b-d5b1701a3c45": [
+                        "out"
+                    ],
+                    "b2bb4dad-758c-45c6-b6e1-9c04cbce4215": [
+                        "out"
+                    ],
+                    "a10585e4-66c9-4dbd-8859-50ac3ebbad2d": [
+                        "out"
+                    ],
+                    "db81f80d-4501-4421-9830-4f18ada1f938": [
+                        "out"
+                    ],
+                    "c9d0b906-4114-43c1-864b-1bafb4d2c80f": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "properties": {
+                    "timeout": 240
+                }
+            },
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "stopFlow"
+            }
+        },
+        "0fa155ff-9878-4045-9c71-b4829a513ae2": {
+            "type": "appmixer.deepl.core.DeleteGlossary",
+            "x": 2352,
+            "y": 784,
+            "version": "1.0.0",
+            "source": {
+                "in": {
+                    "56e83560-9a95-42bc-ad5e-139669dc268d": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "transform": {
+                    "in": {
+                        "56e83560-9a95-42bc-ad5e-139669dc268d": {
+                            "out": {
+                                "type": "json2new",
+                                "modifiers": {
+                                    "glossaryId": {
+                                        "d99b04a8-7443-4aa4-ab0b-b710f5ff1556": {
+                                            "variable": "$.2620c711-b18c-4a1e-bc95-f89d28a7f7b6.out.glossary_id",
+                                            "functions": []
+                                        }
+                                    }
+                                },
+                                "lambda": {
+                                    "glossaryId": "{{{d99b04a8-7443-4aa4-ab0b-b710f5ff1556}}}"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "stopFlow"
+            }
+        },
+        "2917dfb0-1e20-4109-acd1-f1d9b2115309": {
+            "type": "appmixer.utils.test.ProcessE2EResults",
+            "x": 2560,
+            "y": 784,
+            "version": "1.0.0",
+            "source": {
+                "in": {
+                    "0fa155ff-9878-4045-9c71-b4829a513ae2": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "properties": {
+                    "successStoreId": "64f6f1f9193228000754082f",
+                    "failedStoreId": "64f6f1f0193228000754082e"
+                },
+                "transform": {
+                    "in": {
+                        "0fa155ff-9878-4045-9c71-b4829a513ae2": {
+                            "out": {
+                                "type": "json2new",
+                                "modifiers": {
+                                    "recipients": {},
+                                    "testCase": {},
+                                    "result": {
+                                        "a66ba7bc-93e8-409d-9f4a-ee4a5f6b4b69": {
+                                            "variable": "$.56e83560-9a95-42bc-ad5e-139669dc268d.out",
+                                            "functions": []
+                                        }
+                                    }
+                                },
+                                "lambda": {
+                                    "recipients": "test@appmixer.ai",
+                                    "testCase": "E2E DeepL - glossary CRUD",
+                                    "result": "{{{a66ba7bc-93e8-409d-9f4a-ee4a5f6b4b69}}}"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "stopFlow"
+            }
+        }
+    },
+    "notes": {
+        "790d77f8-c105-48fa-a5b1-728512db02b1": {
+            "x": 64,
+            "y": 560,
+            "width": 672,
+            "height": 192,
+            "content": "## Test data\n\nThe flow creates its own glossary and deletes it after AfterAll. The dictionary is replaced with `Hello → Servus`, so the translation of \"Hello\" proves the glossary was applied (DeepL alone would say \"Hallo\")."
+        }
+    }
+}

@@ -1,0 +1,244 @@
+{
+    "name": "E2E DeepL - translate document",
+    "description": "Saves a small text file and translates it into German as a document.",
+    "flow": {
+        "c038a240-803a-4168-8d44-b0cc988c069f": {
+            "type": "appmixer.utils.controls.OnStart",
+            "x": 64,
+            "y": 16,
+            "version": "1.0.0",
+            "source": {},
+            "config": {},
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "stopFlow"
+            }
+        },
+        "84bb8840-5809-4e8f-875a-b436d0bc20cc": {
+            "type": "appmixer.utils.files.SaveFile",
+            "x": 272,
+            "y": 16,
+            "version": "1.0.3",
+            "source": {
+                "in": {
+                    "c038a240-803a-4168-8d44-b0cc988c069f": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "transform": {
+                    "in": {
+                        "c038a240-803a-4168-8d44-b0cc988c069f": {
+                            "out": {
+                                "type": "json2new",
+                                "modifiers": {
+                                    "filename": {},
+                                    "mimetype": {},
+                                    "content": {},
+                                    "contentEncoding": {}
+                                },
+                                "lambda": {
+                                    "filename": "e2e-deepl-document.txt",
+                                    "mimetype": "text/plain",
+                                    "content": "Hello, world! This document is translated by the DeepL connector test.",
+                                    "contentEncoding": "utf8"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "stopFlow"
+            }
+        },
+        "6036dcfd-1ade-46c4-a57a-9367c4580b64": {
+            "type": "appmixer.deepl.core.TranslateDocument",
+            "x": 480,
+            "y": 16,
+            "version": "1.0.0",
+            "source": {
+                "in": {
+                    "84bb8840-5809-4e8f-875a-b436d0bc20cc": [
+                        "file"
+                    ]
+                }
+            },
+            "config": {
+                "transform": {
+                    "in": {
+                        "84bb8840-5809-4e8f-875a-b436d0bc20cc": {
+                            "file": {
+                                "type": "json2new",
+                                "modifiers": {
+                                    "fileId": {
+                                        "03103dd9-12a7-40e8-877d-1d99c90bc32d": {
+                                            "variable": "$.84bb8840-5809-4e8f-875a-b436d0bc20cc.file.fileId",
+                                            "functions": []
+                                        }
+                                    },
+                                    "sourceLang": {},
+                                    "targetLang": {},
+                                    "timeoutMinutes": {}
+                                },
+                                "lambda": {
+                                    "fileId": "{{{03103dd9-12a7-40e8-877d-1d99c90bc32d}}}",
+                                    "sourceLang": "EN",
+                                    "targetLang": "DE",
+                                    "timeoutMinutes": 10
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "stopFlow"
+            }
+        },
+        "22fece7f-2d63-4b73-9f76-289884304ab3": {
+            "type": "appmixer.utils.test.Assert",
+            "x": 688,
+            "y": 16,
+            "version": "1.0.0",
+            "source": {
+                "in": {
+                    "6036dcfd-1ade-46c4-a57a-9367c4580b64": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "transform": {
+                    "in": {
+                        "6036dcfd-1ade-46c4-a57a-9367c4580b64": {
+                            "out": {
+                                "type": "json2new",
+                                "modifiers": {
+                                    "expression": {
+                                        "63a3472a-4025-4651-a68a-9b8f4519db3a": {
+                                            "variable": "$.6036dcfd-1ade-46c4-a57a-9367c4580b64.out.fileId",
+                                            "functions": []
+                                        },
+                                        "7322c817-f256-4a85-8f68-6f284cbdf792": {
+                                            "variable": "$.6036dcfd-1ade-46c4-a57a-9367c4580b64.out.fileName",
+                                            "functions": []
+                                        },
+                                        "efb0b7b6-8503-4ba7-a4cf-f5381c02038f": {
+                                            "variable": "$.6036dcfd-1ade-46c4-a57a-9367c4580b64.out.documentId",
+                                            "functions": []
+                                        }
+                                    }
+                                },
+                                "lambda": {
+                                    "expression": {
+                                        "AND": [
+                                            {
+                                                "field": "{{{63a3472a-4025-4651-a68a-9b8f4519db3a}}}",
+                                                "assertion": "notEmpty"
+                                            },
+                                            {
+                                                "field": "{{{7322c817-f256-4a85-8f68-6f284cbdf792}}}",
+                                                "assertion": "equal",
+                                                "expected": "e2e-deepl-document_DE.txt"
+                                            },
+                                            {
+                                                "field": "{{{efb0b7b6-8503-4ba7-a4cf-f5381c02038f}}}",
+                                                "assertion": "notEmpty"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "stopFlow"
+            }
+        },
+        "442fbb21-9949-47e0-9512-d09b8a4e09c3": {
+            "type": "appmixer.utils.test.AfterAll",
+            "x": 896,
+            "y": 16,
+            "version": "1.0.0",
+            "source": {
+                "in": {
+                    "22fece7f-2d63-4b73-9f76-289884304ab3": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "properties": {
+                    "timeout": 900
+                }
+            },
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "stopFlow"
+            }
+        },
+        "73037448-152c-431f-8455-5e2fc1080620": {
+            "type": "appmixer.utils.test.ProcessE2EResults",
+            "x": 1104,
+            "y": 16,
+            "version": "1.0.0",
+            "source": {
+                "in": {
+                    "442fbb21-9949-47e0-9512-d09b8a4e09c3": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "properties": {
+                    "successStoreId": "64f6f1f9193228000754082f",
+                    "failedStoreId": "64f6f1f0193228000754082e"
+                },
+                "transform": {
+                    "in": {
+                        "442fbb21-9949-47e0-9512-d09b8a4e09c3": {
+                            "out": {
+                                "type": "json2new",
+                                "modifiers": {
+                                    "recipients": {},
+                                    "testCase": {},
+                                    "result": {
+                                        "ce5d1810-b823-4268-b776-ce145ccb6c11": {
+                                            "variable": "$.442fbb21-9949-47e0-9512-d09b8a4e09c3.out",
+                                            "functions": []
+                                        }
+                                    }
+                                },
+                                "lambda": {
+                                    "recipients": "test@appmixer.ai",
+                                    "testCase": "E2E DeepL - translate document",
+                                    "result": "{{{ce5d1810-b823-4268-b776-ce145ccb6c11}}}"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "stopFlow"
+            }
+        }
+    },
+    "notes": {
+        "c47910cd-534f-4b55-8691-23bb9a05d103": {
+            "x": 64,
+            "y": 176,
+            "width": 672,
+            "height": 176,
+            "content": "## ⚠️ Timing\n\nDocument translation is asynchronous: the component checks the status once a minute (Appmixer's minimum continuation delay), so the flow takes at least one to two minutes. Keep the AfterAll timeout long."
+        }
+    }
+}

@@ -1,0 +1,84 @@
+{
+    "name": "appmixer.deepl.core.ListLanguages",
+    "label": "List Languages",
+    "description": "Languages of a DeepL feature, as options of a language field.",
+    "author": "Appmixer <info@appmixer.com>",
+    "version": "1.0.0",
+    "private": true,
+    "auth": {
+        "service": "appmixer:deepl"
+    },
+    "quota": {
+        "manager": "appmixer:deepl",
+        "resources": "requests",
+        "scope": {
+            "userId": "{{userId}}"
+        }
+    },
+    "inPorts": [
+        {
+            "name": "in",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "resource": {
+                        "type": "string"
+                    },
+                    "usableAs": {
+                        "type": "string"
+                    }
+                }
+            },
+            "inspector": {
+                "inputs": {
+                    "resource": {
+                        "type": "text",
+                        "index": 1,
+                        "label": "Feature"
+                    },
+                    "usableAs": {
+                        "type": "text",
+                        "index": 2,
+                        "label": "Usable As"
+                    }
+                }
+            }
+        }
+    ],
+    "outPorts": [
+        {
+            "name": "out",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "languages": {
+                        "type": "array",
+                        "title": "Languages",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "lang": {
+                                    "type": "string",
+                                    "title": "Code",
+                                    "example": "de"
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "title": "Name",
+                                    "example": "German"
+                                }
+                            }
+                        },
+                        "example": [
+                            {
+                                "lang": "de",
+                                "name": "German"
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    ],
+    "icon": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJEZWVwTCI+PHBhdGggZmlsbD0iIzBGMkI0NiIgZD0iTTIwLjkwNyA0LjkzOTUzIDEyLjY4NTQzLjE4NTczYTEuMzU3NyAxLjM1NzcgMCAwIDAtMS4zNzA5IDBMMy4wOTI5OCA0Ljk1NjVhMS4zNzY2IDEuMzc2NiAwIDAgMC0uNjg2MzkgMS4xODIzM3Y5LjUyNjQ2YTEuMzc2NiAxLjM3NjYgMCAwIDAgLjY4NjM5IDEuMTkzNjNsOC4yMjE1NyA0Ljc1OTQ2LjA2MjIzLjAzNTgzIDQuMDQ4NTYgMi4zNDU4LS4wMTEzMS0yLjA2MTA2LjAwNzUtMS4xNDQ2LjAwMzguMDE4ODV2LS4zODQ2N2MwLS4yMzAwNi4xMTg4LS40MzM3MS4yOTYwNS0uNTYwMDVsLjI2NC0uMTUwODYuMTI2MzMtLjA2OTc3aC0uMDA3NWw0LjgwMjgzLTIuNzc5NWExLjM4MDMgMS4zODAzIDAgMCAwIC42ODYzOS0xLjE5NTUxVjYuMTM1MDVhMS4zODAzIDEuMzgwMyAwIDAgMC0uNjg2NDItMS4xOTU1Mm0tOS44NTI2OSA5LjY4ODYzYTEuNDI3NSAxLjQyNzUgMCAwIDEtLjM5OTc2IDEuMzg0MSAxLjQwODYgMS40MDg2IDAgMCAxLTEuOTcwNTQgMCAxLjQxOTkgMS40MTk5IDAgMCAxIDAtMi4wNjI5NCAxLjQwODYgMS40MDg2IDAgMCAxIDIuMDQyMi4wNzU0M2wzLjMyODIyLTEuOTE1ODUuNjg2NC4zODY1NnptNS43NzAxOS0yLjQxMzY3YTEuNDA4NiAxLjQwODYgMCAwIDEtMS45NzA1NCAwIDEuNDI1NiAxLjQyNTYgMCAwIDEtLjM2OTYtMS40NzgzN2wtLjAxMzIuMDA3NS0zLjc1MjUtMi4xNzIzLS4wNTY1Ny4wNTY1NmExLjQwODYgMS40MDg2IDAgMCAxLTEuOTcwNTMgMCAxLjQxOTkgMS40MTk5IDAgMCAxIDAtMi4wNjI5MyAxLjQwODYgMS40MDg2IDAgMCAxIDEuOTcyNDIgMGMuMzk0MS4zNzcxMy41MjQyMi45MTgzMi4zOTAzMyAxLjQwNjcybDMuNzgwOCAyLjIwMDU5LjAxODg2LS4wMTg4NmExLjQwODYgMS40MDg2IDAgMCAxIDEuOTcyNDIgMCAxLjQyNzQ2IDEuNDI3NDYgMCAwIDEgMCAyLjA2MTA1eiIvPjwvc3ZnPg=="
+}

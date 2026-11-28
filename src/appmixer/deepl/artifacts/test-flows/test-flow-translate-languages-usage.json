@@ -1,0 +1,478 @@
+{
+    "name": "E2E DeepL - translate text, languages, usage and API call",
+    "description": "Translates a text, finds the target languages, reads the usage and calls /v3/languages through Make API Call.",
+    "flow": {
+        "37dfdd8b-c6e0-4a5a-8009-f99cd525c912": {
+            "type": "appmixer.utils.controls.OnStart",
+            "x": 64,
+            "y": 16,
+            "version": "1.0.0",
+            "source": {},
+            "config": {},
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "stopFlow"
+            }
+        },
+        "79065f54-b9d9-401d-9677-07f04e6c14a9": {
+            "type": "appmixer.deepl.core.TranslateText",
+            "x": 272,
+            "y": 16,
+            "version": "1.0.0",
+            "source": {
+                "in": {
+                    "37dfdd8b-c6e0-4a5a-8009-f99cd525c912": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "transform": {
+                    "in": {
+                        "37dfdd8b-c6e0-4a5a-8009-f99cd525c912": {
+                            "out": {
+                                "type": "json2new",
+                                "modifiers": {
+                                    "text": {},
+                                    "sourceLang": {},
+                                    "targetLang": {},
+                                    "formality": {},
+                                    "context": {},
+                                    "modelType": {},
+                                    "preserveFormatting": {}
+                                },
+                                "lambda": {
+                                    "text": "Hello, world!",
+                                    "sourceLang": "EN",
+                                    "targetLang": "DE",
+                                    "formality": "prefer_less",
+                                    "context": "A friendly greeting at the start of an email.",
+                                    "modelType": "prefer_quality_optimized",
+                                    "preserveFormatting": false
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "stopFlow"
+            }
+        },
+        "76c0793b-e5a3-40be-88e9-d7937256229d": {
+            "type": "appmixer.utils.test.Assert",
+            "x": 480,
+            "y": 16,
+            "version": "1.0.0",
+            "source": {
+                "in": {
+                    "79065f54-b9d9-401d-9677-07f04e6c14a9": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "transform": {
+                    "in": {
+                        "79065f54-b9d9-401d-9677-07f04e6c14a9": {
+                            "out": {
+                                "type": "json2new",
+                                "modifiers": {
+                                    "expression": {
+                                        "465a1158-d172-4eea-bda6-9ff338577b84": {
+                                            "variable": "$.79065f54-b9d9-401d-9677-07f04e6c14a9.out.text",
+                                            "functions": []
+                                        },
+                                        "955b1893-263d-4e47-9c59-1d3226e75a88": {
+                                            "variable": "$.79065f54-b9d9-401d-9677-07f04e6c14a9.out.detected_source_language",
+                                            "functions": []
+                                        }
+                                    }
+                                },
+                                "lambda": {
+                                    "expression": {
+                                        "AND": [
+                                            {
+                                                "field": "{{{465a1158-d172-4eea-bda6-9ff338577b84}}}",
+                                                "assertion": "regex",
+                                                "regex": "Hallo"
+                                            },
+                                            {
+                                                "field": "{{{955b1893-263d-4e47-9c59-1d3226e75a88}}}",
+                                                "assertion": "equal",
+                                                "expected": "EN"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "stopFlow"
+            }
+        },
+        "6307b326-5b5e-4621-88f9-e0bd0cb0ecb8": {
+            "type": "appmixer.deepl.core.FindLanguages",
+            "x": 480,
+            "y": 144,
+            "version": "1.0.0",
+            "source": {
+                "in": {
+                    "37dfdd8b-c6e0-4a5a-8009-f99cd525c912": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "transform": {
+                    "in": {
+                        "37dfdd8b-c6e0-4a5a-8009-f99cd525c912": {
+                            "out": {
+                                "type": "json2new",
+                                "modifiers": {
+                                    "resource": {},
+                                    "usableAs": {},
+                                    "outputType": {}
+                                },
+                                "lambda": {
+                                    "resource": "translate_text",
+                                    "usableAs": "target",
+                                    "outputType": "first"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "stopFlow"
+            }
+        },
+        "de6dce12-c708-44a0-a050-e90eb74d332a": {
+            "type": "appmixer.utils.test.Assert",
+            "x": 688,
+            "y": 144,
+            "version": "1.0.0",
+            "source": {
+                "in": {
+                    "6307b326-5b5e-4621-88f9-e0bd0cb0ecb8": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "transform": {
+                    "in": {
+                        "6307b326-5b5e-4621-88f9-e0bd0cb0ecb8": {
+                            "out": {
+                                "type": "json2new",
+                                "modifiers": {
+                                    "expression": {
+                                        "81949fc9-b4df-4103-bfca-7cdf8287c735": {
+                                            "variable": "$.6307b326-5b5e-4621-88f9-e0bd0cb0ecb8.out.lang",
+                                            "functions": []
+                                        },
+                                        "71beb3bf-347b-4fbd-9bbf-b40e51c2b4e0": {
+                                            "variable": "$.6307b326-5b5e-4621-88f9-e0bd0cb0ecb8.out.name",
+                                            "functions": []
+                                        }
+                                    }
+                                },
+                                "lambda": {
+                                    "expression": {
+                                        "AND": [
+                                            {
+                                                "field": "{{{81949fc9-b4df-4103-bfca-7cdf8287c735}}}",
+                                                "assertion": "notEmpty"
+                                            },
+                                            {
+                                                "field": "{{{71beb3bf-347b-4fbd-9bbf-b40e51c2b4e0}}}",
+                                                "assertion": "notEmpty"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "stopFlow"
+            }
+        },
+        "4f740220-8389-4199-8b2b-fcc1c33fa415": {
+            "type": "appmixer.deepl.core.GetUsage",
+            "x": 688,
+            "y": 272,
+            "version": "1.0.0",
+            "source": {
+                "in": {
+                    "37dfdd8b-c6e0-4a5a-8009-f99cd525c912": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "transform": {
+                    "in": {
+                        "37dfdd8b-c6e0-4a5a-8009-f99cd525c912": {
+                            "out": {
+                                "type": "json2new",
+                                "modifiers": {},
+                                "lambda": {}
+                            }
+                        }
+                    }
+                }
+            },
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "stopFlow"
+            }
+        },
+        "cf2e9288-9a47-49e3-a923-e55b79e4a8cc": {
+            "type": "appmixer.utils.test.Assert",
+            "x": 896,
+            "y": 272,
+            "version": "1.0.0",
+            "source": {
+                "in": {
+                    "4f740220-8389-4199-8b2b-fcc1c33fa415": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "transform": {
+                    "in": {
+                        "4f740220-8389-4199-8b2b-fcc1c33fa415": {
+                            "out": {
+                                "type": "json2new",
+                                "modifiers": {
+                                    "expression": {
+                                        "d7d450e0-84b4-4bea-82f9-b8cb0b57e686": {
+                                            "variable": "$.4f740220-8389-4199-8b2b-fcc1c33fa415.out.character_limit",
+                                            "functions": []
+                                        }
+                                    }
+                                },
+                                "lambda": {
+                                    "expression": {
+                                        "AND": [
+                                            {
+                                                "field": "{{{d7d450e0-84b4-4bea-82f9-b8cb0b57e686}}}",
+                                                "assertion": "regex",
+                                                "regex": "^[0-9]+$"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "stopFlow"
+            }
+        },
+        "00e46136-0fa7-4a9f-9d58-22fbfdb42089": {
+            "type": "appmixer.deepl.core.MakeApiCall",
+            "x": 896,
+            "y": 400,
+            "version": "1.0.0",
+            "source": {
+                "in": {
+                    "37dfdd8b-c6e0-4a5a-8009-f99cd525c912": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "transform": {
+                    "in": {
+                        "37dfdd8b-c6e0-4a5a-8009-f99cd525c912": {
+                            "out": {
+                                "type": "json2new",
+                                "modifiers": {
+                                    "url": {},
+                                    "method": {},
+                                    "parameters": {}
+                                },
+                                "lambda": {
+                                    "url": "/v3/languages",
+                                    "method": "GET",
+                                    "parameters": "{\"resource\":\"glossary\"}"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "stopFlow"
+            }
+        },
+        "60483456-c0ee-4149-b9b6-5879cab965d5": {
+            "type": "appmixer.utils.test.Assert",
+            "x": 1104,
+            "y": 400,
+            "version": "1.0.0",
+            "source": {
+                "in": {
+                    "00e46136-0fa7-4a9f-9d58-22fbfdb42089": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "transform": {
+                    "in": {
+                        "00e46136-0fa7-4a9f-9d58-22fbfdb42089": {
+                            "out": {
+                                "type": "json2new",
+                                "modifiers": {
+                                    "expression": {
+                                        "b4766950-4e39-4508-b733-e63098a416b4": {
+                                            "variable": "$.00e46136-0fa7-4a9f-9d58-22fbfdb42089.out.statusCode",
+                                            "functions": []
+                                        },
+                                        "86cffcb5-73ff-4c18-944d-0c2b42f16537": {
+                                            "variable": "$.00e46136-0fa7-4a9f-9d58-22fbfdb42089.out.body",
+                                            "functions": [
+                                                {
+                                                    "name": "g_jsonPath",
+                                                    "params": [
+                                                        {
+                                                            "value": "$[0].lang"
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    }
+                                },
+                                "lambda": {
+                                    "expression": {
+                                        "AND": [
+                                            {
+                                                "field": "{{{b4766950-4e39-4508-b733-e63098a416b4}}}",
+                                                "assertion": "equal",
+                                                "expected": "200"
+                                            },
+                                            {
+                                                "field": "{{{86cffcb5-73ff-4c18-944d-0c2b42f16537}}}",
+                                                "assertion": "notEmpty"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "stopFlow"
+            }
+        },
+        "030ce3c1-a9c1-44b0-895f-c37b5732d247": {
+            "type": "appmixer.utils.test.AfterAll",
+            "x": 1312,
+            "y": 400,
+            "version": "1.0.0",
+            "source": {
+                "in": {
+                    "76c0793b-e5a3-40be-88e9-d7937256229d": [
+                        "out"
+                    ],
+                    "de6dce12-c708-44a0-a050-e90eb74d332a": [
+                        "out"
+                    ],
+                    "cf2e9288-9a47-49e3-a923-e55b79e4a8cc": [
+                        "out"
+                    ],
+                    "60483456-c0ee-4149-b9b6-5879cab965d5": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "properties": {
+                    "timeout": 180
+                }
+            },
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "stopFlow"
+            }
+        },
+        "8fb64c85-4a76-4958-80ca-5a5d7ed8cf73": {
+            "type": "appmixer.utils.test.ProcessE2EResults",
+            "x": 1520,
+            "y": 400,
+            "version": "1.0.0",
+            "source": {
+                "in": {
+                    "030ce3c1-a9c1-44b0-895f-c37b5732d247": [
+                        "out"
+                    ]
+                }
+            },
+            "config": {
+                "properties": {
+                    "successStoreId": "64f6f1f9193228000754082f",
+                    "failedStoreId": "64f6f1f0193228000754082e"
+                },
+                "transform": {
+                    "in": {
+                        "030ce3c1-a9c1-44b0-895f-c37b5732d247": {
+                            "out": {
+                                "type": "json2new",
+                                "modifiers": {
+                                    "recipients": {},
+                                    "testCase": {},
+                                    "result": {
+                                        "f801f590-c7ad-4401-a87e-28df1621cc2b": {
+                                            "variable": "$.030ce3c1-a9c1-44b0-895f-c37b5732d247.out",
+                                            "functions": []
+                                        }
+                                    }
+                                },
+                                "lambda": {
+                                    "recipients": "test@appmixer.ai",
+                                    "testCase": "E2E DeepL - translate text, languages, usage and API call",
+                                    "result": "{{{f801f590-c7ad-4401-a87e-28df1621cc2b}}}"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "errorHandling": {
+                "autoRetry": false,
+                "onError": "stopFlow"
+            }
+        }
+    },
+    "notes": {
+        "608dc78f-3dd8-46e0-aa1b-1d4ad3513eb5": {
+            "x": 64,
+            "y": 560,
+            "width": 672,
+            "height": 160,
+            "content": "## Note\n\nMake API Call sends the required `resource=glossary` query parameter of `/v3/languages`. If the Query Parameters input were dropped, DeepL would answer 400 and the flow would fail, so the assertion proves the key-value input reaches the API."
+        }
+    }
+}

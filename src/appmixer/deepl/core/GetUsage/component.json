@@ -1,0 +1,89 @@
+{
+    "name": "appmixer.deepl.core.GetUsage",
+    "label": "Get Usage",
+    "description": "Get the usage and the limits of the DeepL account in the current billing period: translated characters, and documents where the plan limits them.",
+    "author": "Appmixer <info@appmixer.com>",
+    "version": "1.0.0",
+    "auth": {
+        "service": "appmixer:deepl"
+    },
+    "quota": {
+        "manager": "appmixer:deepl",
+        "resources": "requests",
+        "scope": {
+            "userId": "{{userId}}"
+        }
+    },
+    "inPorts": [
+        {
+            "name": "in"
+        }
+    ],
+    "outPorts": [
+        {
+            "name": "out",
+            "schema": {
+                "type": "object",
+                "required": [
+                    "character_count",
+                    "character_limit"
+                ],
+                "properties": {
+                    "character_count": {
+                        "type": "integer",
+                        "title": "Character Count",
+                        "example": 180118
+                    },
+                    "character_limit": {
+                        "type": "integer",
+                        "title": "Character Limit",
+                        "example": 500000
+                    },
+                    "document_count": {
+                        "type": "integer",
+                        "title": "Document Count",
+                        "example": 3
+                    },
+                    "document_limit": {
+                        "type": "integer",
+                        "title": "Document Limit",
+                        "example": 10
+                    },
+                    "team_document_count": {
+                        "type": "integer",
+                        "title": "Team Document Count",
+                        "example": 12
+                    },
+                    "team_document_limit": {
+                        "type": "integer",
+                        "title": "Team Document Limit",
+                        "example": 100
+                    },
+                    "api_key_character_count": {
+                        "type": "integer",
+                        "title": "API Key Character Count",
+                        "example": 636
+                    },
+                    "api_key_character_limit": {
+                        "type": "integer",
+                        "title": "API Key Character Limit",
+                        "example": 1000000
+                    },
+                    "start_time": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Billing Period Start",
+                        "example": "2026-11-13T09:18:42Z"
+                    },
+                    "end_time": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Billing Period End",
+                        "example": "2026-12-13T09:18:42Z"
+                    }
+                }
+            }
+        }
+    ],
+    "icon": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJEZWVwTCI+PHBhdGggZmlsbD0iIzBGMkI0NiIgZD0iTTIwLjkwNyA0LjkzOTUzIDEyLjY4NTQzLjE4NTczYTEuMzU3NyAxLjM1NzcgMCAwIDAtMS4zNzA5IDBMMy4wOTI5OCA0Ljk1NjVhMS4zNzY2IDEuMzc2NiAwIDAgMC0uNjg2MzkgMS4xODIzM3Y5LjUyNjQ2YTEuMzc2NiAxLjM3NjYgMCAwIDAgLjY4NjM5IDEuMTkzNjNsOC4yMjE1NyA0Ljc1OTQ2LjA2MjIzLjAzNTgzIDQuMDQ4NTYgMi4zNDU4LS4wMTEzMS0yLjA2MTA2LjAwNzUtMS4xNDQ2LjAwMzguMDE4ODV2LS4zODQ2N2MwLS4yMzAwNi4xMTg4LS40MzM3MS4yOTYwNS0uNTYwMDVsLjI2NC0uMTUwODYuMTI2MzMtLjA2OTc3aC0uMDA3NWw0LjgwMjgzLTIuNzc5NWExLjM4MDMgMS4zODAzIDAgMCAwIC42ODYzOS0xLjE5NTUxVjYuMTM1MDVhMS4zODAzIDEuMzgwMyAwIDAgMC0uNjg2NDItMS4xOTU1Mm0tOS44NTI2OSA5LjY4ODYzYTEuNDI3NSAxLjQyNzUgMCAwIDEtLjM5OTc2IDEuMzg0MSAxLjQwODYgMS40MDg2IDAgMCAxLTEuOTcwNTQgMCAxLjQxOTkgMS40MTk5IDAgMCAxIDAtMi4wNjI5NCAxLjQwODYgMS40MDg2IDAgMCAxIDIuMDQyMi4wNzU0M2wzLjMyODIyLTEuOTE1ODUuNjg2NC4zODY1NnptNS43NzAxOS0yLjQxMzY3YTEuNDA4NiAxLjQwODYgMCAwIDEtMS45NzA1NCAwIDEuNDI1NiAxLjQyNTYgMCAwIDEtLjM2OTYtMS40NzgzN2wtLjAxMzIuMDA3NS0zLjc1MjUtMi4xNzIzLS4wNTY1Ny4wNTY1NmExLjQwODYgMS40MDg2IDAgMCAxLTEuOTcwNTMgMCAxLjQxOTkgMS40MTk5IDAgMCAxIDAtMi4wNjI5MyAxLjQwODYgMS40MDg2IDAgMCAxIDEuOTcyNDIgMGMuMzk0MS4zNzcxMy41MjQyMi45MTgzMi4zOTAzMyAxLjQwNjcybDMuNzgwOCAyLjIwMDU5LjAxODg2LS4wMTg4NmExLjQwODYgMS40MDg2IDAgMCAxIDEuOTcyNDIgMCAxLjQyNzQ2IDEuNDI3NDYgMCAwIDEgMCAyLjA2MTA1eiIvPjwvc3ZnPg=="
+}

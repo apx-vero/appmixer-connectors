@@ -1,0 +1,211 @@
+{
+    "name": "appmixer.deepl.core.TranslateDocument",
+    "label": "Translate Document",
+    "description": "Translate a whole document (Word, PowerPoint, Excel, PDF, HTML, text and more) with DeepL and keep its formatting. DeepL translates the document in the background: the component checks the status once a minute and sends the translated file when it is done. If it is not done within the timeout, the component fails.",
+    "author": "Appmixer <info@appmixer.com>",
+    "version": "1.0.0",
+    "auth": {
+        "service": "appmixer:deepl"
+    },
+    "quota": {
+        "manager": "appmixer:deepl",
+        "resources": "requests",
+        "scope": {
+            "userId": "{{userId}}"
+        }
+    },
+    "inPorts": [
+        {
+            "name": "in",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "fileId": {
+                        "type": "string"
+                    },
+                    "targetLang": {
+                        "type": "string"
+                    },
+                    "sourceLang": {
+                        "type": "string"
+                    },
+                    "formality": {
+                        "type": "string",
+                        "enum": [
+                            "default",
+                            "more",
+                            "less",
+                            "prefer_more",
+                            "prefer_less"
+                        ]
+                    },
+                    "glossaryId": {
+                        "type": "string"
+                    },
+                    "outputFormat": {
+                        "type": "string"
+                    },
+                    "timeoutMinutes": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 240
+                    }
+                },
+                "required": [
+                    "fileId",
+                    "targetLang"
+                ]
+            },
+            "inspector": {
+                "inputs": {
+                    "fileId": {
+                        "type": "filepicker",
+                        "index": 1,
+                        "label": "File",
+                        "tooltip": "The document to translate. The file name must carry the extension (for example <code>report.docx</code>)."
+                    },
+                    "targetLang": {
+                        "type": "text",
+                        "index": 2,
+                        "label": "Target Language",
+                        "tooltip": "The language to translate into, for example <code>DE</code>. Pick one, or type the code.",
+                        "source": {
+                            "url": "/component/appmixer/deepl/core/ListLanguages?outPort=out",
+                            "data": {
+                                "messages": {
+                                    "in/resource": "translate_document",
+                                    "in/usableAs": "target"
+                                },
+                                "properties": {
+                                    "isSource": true
+                                },
+                                "transform": "./ListLanguages#toSelectArray"
+                            }
+                        }
+                    },
+                    "sourceLang": {
+                        "type": "text",
+                        "index": 3,
+                        "label": "Source Language",
+                        "tooltip": "The language of the document. Leave empty to detect it. Required when you use a glossary.",
+                        "source": {
+                            "url": "/component/appmixer/deepl/core/ListLanguages?outPort=out",
+                            "data": {
+                                "messages": {
+                                    "in/resource": "translate_document",
+                                    "in/usableAs": "source"
+                                },
+                                "properties": {
+                                    "isSource": true
+                                },
+                                "transform": "./ListLanguages#toSelectArray"
+                            }
+                        }
+                    },
+                    "formality": {
+                        "type": "select",
+                        "index": 4,
+                        "label": "Formality",
+                        "tooltip": "Lean towards formal or informal language, where the target language supports it.",
+                        "options": [
+                            {
+                                "label": "Default",
+                                "value": "default"
+                            },
+                            {
+                                "label": "More formal",
+                                "value": "more"
+                            },
+                            {
+                                "label": "Less formal",
+                                "value": "less"
+                            },
+                            {
+                                "label": "More formal if available",
+                                "value": "prefer_more"
+                            },
+                            {
+                                "label": "Less formal if available",
+                                "value": "prefer_less"
+                            }
+                        ]
+                    },
+                    "glossaryId": {
+                        "type": "text",
+                        "index": 5,
+                        "label": "Glossary",
+                        "tooltip": "A glossary to apply. It needs a dictionary for the language pair, and the Source Language must be set. Pick one, or type the glossary ID.",
+                        "source": {
+                            "url": "/component/appmixer/deepl/core/ListGlossaries?outPort=out",
+                            "data": {
+                                "properties": {
+                                    "isSource": true
+                                },
+                                "transform": "./ListGlossaries#toSelectArray"
+                            }
+                        }
+                    },
+                    "outputFormat": {
+                        "type": "text",
+                        "index": 6,
+                        "label": "Output Format",
+                        "tooltip": "The file extension of the translated file when it should differ from the original, for example <code>docx</code> for a PDF. Leave empty to keep the format."
+                    },
+                    "timeoutMinutes": {
+                        "type": "number",
+                        "index": 7,
+                        "label": "Timeout (minutes)",
+                        "defaultValue": 30,
+                        "tooltip": "How long to wait for the translation, 1 to 240 minutes. The default is 30."
+                    }
+                }
+            }
+        }
+    ],
+    "outPorts": [
+        {
+            "name": "out",
+            "schema": {
+                "type": "object",
+                "required": [
+                    "fileId",
+                    "fileName",
+                    "documentId"
+                ],
+                "properties": {
+                    "fileId": {
+                        "type": "string",
+                        "title": "File ID",
+                        "example": "5f8a3c2e-9b1d-4e6f-8a7c-2d4b6e8f0a1c"
+                    },
+                    "fileName": {
+                        "type": "string",
+                        "title": "File Name",
+                        "example": "report_DE.docx"
+                    },
+                    "fileSize": {
+                        "type": "integer",
+                        "title": "File Size",
+                        "example": 24816
+                    },
+                    "documentId": {
+                        "type": "string",
+                        "title": "Document ID",
+                        "example": "04DE5AD98A02647D83285A36021911C6"
+                    },
+                    "billedCharacters": {
+                        "type": "integer",
+                        "title": "Billed Characters",
+                        "example": 1337
+                    },
+                    "targetLang": {
+                        "type": "string",
+                        "title": "Target Language",
+                        "example": "DE"
+                    }
+                }
+            }
+        }
+    ],
+    "icon": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJEZWVwTCI+PHBhdGggZmlsbD0iIzBGMkI0NiIgZD0iTTIwLjkwNyA0LjkzOTUzIDEyLjY4NTQzLjE4NTczYTEuMzU3NyAxLjM1NzcgMCAwIDAtMS4zNzA5IDBMMy4wOTI5OCA0Ljk1NjVhMS4zNzY2IDEuMzc2NiAwIDAgMC0uNjg2MzkgMS4xODIzM3Y5LjUyNjQ2YTEuMzc2NiAxLjM3NjYgMCAwIDAgLjY4NjM5IDEuMTkzNjNsOC4yMjE1NyA0Ljc1OTQ2LjA2MjIzLjAzNTgzIDQuMDQ4NTYgMi4zNDU4LS4wMTEzMS0yLjA2MTA2LjAwNzUtMS4xNDQ2LjAwMzguMDE4ODV2LS4zODQ2N2MwLS4yMzAwNi4xMTg4LS40MzM3MS4yOTYwNS0uNTYwMDVsLjI2NC0uMTUwODYuMTI2MzMtLjA2OTc3aC0uMDA3NWw0LjgwMjgzLTIuNzc5NWExLjM4MDMgMS4zODAzIDAgMCAwIC42ODYzOS0xLjE5NTUxVjYuMTM1MDVhMS4zODAzIDEuMzgwMyAwIDAgMC0uNjg2NDItMS4xOTU1Mm0tOS44NTI2OSA5LjY4ODYzYTEuNDI3NSAxLjQyNzUgMCAwIDEtLjM5OTc2IDEuMzg0MSAxLjQwODYgMS40MDg2IDAgMCAxLTEuOTcwNTQgMCAxLjQxOTkgMS40MTk5IDAgMCAxIDAtMi4wNjI5NCAxLjQwODYgMS40MDg2IDAgMCAxIDIuMDQyMi4wNzU0M2wzLjMyODIyLTEuOTE1ODUuNjg2NC4zODY1NnptNS43NzAxOS0yLjQxMzY3YTEuNDA4NiAxLjQwODYgMCAwIDEtMS45NzA1NCAwIDEuNDI1NiAxLjQyNTYgMCAwIDEtLjM2OTYtMS40NzgzN2wtLjAxMzIuMDA3NS0zLjc1MjUtMi4xNzIzLS4wNTY1Ny4wNTY1NmExLjQwODYgMS40MDg2IDAgMCAxLTEuOTcwNTMgMCAxLjQxOTkgMS40MTk5IDAgMCAxIDAtMi4wNjI5MyAxLjQwODYgMS40MDg2IDAgMCAxIDEuOTcyNDIgMGMuMzk0MS4zNzcxMy41MjQyMi45MTgzMi4zOTAzMyAxLjQwNjcybDMuNzgwOCAyLjIwMDU5LjAxODg2LS4wMTg4NmExLjQwODYgMS40MDg2IDAgMCAxIDEuOTcyNDIgMCAxLjQyNzQ2IDEuNDI3NDYgMCAwIDEgMCAyLjA2MTA1eiIvPjwvc3ZnPg=="
+}

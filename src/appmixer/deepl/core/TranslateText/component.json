@@ -1,0 +1,249 @@
+{
+    "name": "appmixer.deepl.core.TranslateText",
+    "label": "Translate Text",
+    "description": "Translate a text into another language with DeepL. The source language is detected when you leave it empty.",
+    "author": "Appmixer <info@appmixer.com>",
+    "version": "1.0.0",
+    "auth": {
+        "service": "appmixer:deepl"
+    },
+    "quota": {
+        "manager": "appmixer:deepl",
+        "resources": "requests",
+        "scope": {
+            "userId": "{{userId}}"
+        }
+    },
+    "inPorts": [
+        {
+            "name": "in",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "text": {
+                        "type": "string"
+                    },
+                    "targetLang": {
+                        "type": "string"
+                    },
+                    "sourceLang": {
+                        "type": "string"
+                    },
+                    "formality": {
+                        "type": "string",
+                        "enum": [
+                            "default",
+                            "more",
+                            "less",
+                            "prefer_more",
+                            "prefer_less"
+                        ]
+                    },
+                    "glossaryId": {
+                        "type": "string"
+                    },
+                    "context": {
+                        "type": "string"
+                    },
+                    "modelType": {
+                        "type": "string",
+                        "enum": [
+                            "quality_optimized",
+                            "prefer_quality_optimized",
+                            "latency_optimized"
+                        ]
+                    },
+                    "tagHandling": {
+                        "type": "string",
+                        "enum": [
+                            "xml",
+                            "html"
+                        ]
+                    },
+                    "preserveFormatting": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "text",
+                    "targetLang"
+                ]
+            },
+            "inspector": {
+                "inputs": {
+                    "text": {
+                        "type": "textarea",
+                        "index": 1,
+                        "label": "Text",
+                        "tooltip": "The text to translate (plain UTF-8 text, or XML/HTML with Tag Handling)."
+                    },
+                    "targetLang": {
+                        "type": "text",
+                        "index": 2,
+                        "label": "Target Language",
+                        "tooltip": "The language to translate into, for example <code>DE</code> or <code>EN-US</code>. Pick one, or type the code.",
+                        "source": {
+                            "url": "/component/appmixer/deepl/core/ListLanguages?outPort=out",
+                            "data": {
+                                "messages": {
+                                    "in/resource": "translate_text",
+                                    "in/usableAs": "target"
+                                },
+                                "properties": {
+                                    "isSource": true
+                                },
+                                "transform": "./ListLanguages#toSelectArray"
+                            }
+                        }
+                    },
+                    "sourceLang": {
+                        "type": "text",
+                        "index": 3,
+                        "label": "Source Language",
+                        "tooltip": "The language of the text, for example <code>EN</code>. Leave empty to detect it. Required when you use a glossary.",
+                        "source": {
+                            "url": "/component/appmixer/deepl/core/ListLanguages?outPort=out",
+                            "data": {
+                                "messages": {
+                                    "in/resource": "translate_text",
+                                    "in/usableAs": "source"
+                                },
+                                "properties": {
+                                    "isSource": true
+                                },
+                                "transform": "./ListLanguages#toSelectArray"
+                            }
+                        }
+                    },
+                    "formality": {
+                        "type": "select",
+                        "index": 4,
+                        "label": "Formality",
+                        "tooltip": "Lean towards formal or informal language. Only some target languages support it; the \"if available\" options fall back to the default elsewhere.",
+                        "options": [
+                            {
+                                "label": "Default",
+                                "value": "default"
+                            },
+                            {
+                                "label": "More formal",
+                                "value": "more"
+                            },
+                            {
+                                "label": "Less formal",
+                                "value": "less"
+                            },
+                            {
+                                "label": "More formal if available",
+                                "value": "prefer_more"
+                            },
+                            {
+                                "label": "Less formal if available",
+                                "value": "prefer_less"
+                            }
+                        ]
+                    },
+                    "glossaryId": {
+                        "type": "text",
+                        "index": 5,
+                        "label": "Glossary",
+                        "tooltip": "A glossary to apply. It needs a dictionary for the language pair, and the Source Language must be set. Pick one, or type the glossary ID.",
+                        "source": {
+                            "url": "/component/appmixer/deepl/core/ListGlossaries?outPort=out",
+                            "data": {
+                                "properties": {
+                                    "isSource": true
+                                },
+                                "transform": "./ListGlossaries#toSelectArray"
+                            }
+                        }
+                    },
+                    "context": {
+                        "type": "textarea",
+                        "index": 6,
+                        "label": "Context",
+                        "tooltip": "Additional text that helps DeepL translate, for example the paragraph around the text. It is not translated and not billed."
+                    },
+                    "modelType": {
+                        "type": "select",
+                        "index": 7,
+                        "label": "Model Type",
+                        "tooltip": "Which DeepL model to use. Leave empty for DeepL's default.",
+                        "options": [
+                            {
+                                "label": "Quality optimized",
+                                "value": "quality_optimized"
+                            },
+                            {
+                                "label": "Prefer quality optimized",
+                                "value": "prefer_quality_optimized"
+                            },
+                            {
+                                "label": "Latency optimized",
+                                "value": "latency_optimized"
+                            }
+                        ]
+                    },
+                    "tagHandling": {
+                        "type": "select",
+                        "index": 8,
+                        "label": "Tag Handling",
+                        "tooltip": "Translate XML or HTML and keep its tags. Leave empty for plain text.",
+                        "options": [
+                            {
+                                "label": "XML",
+                                "value": "xml"
+                            },
+                            {
+                                "label": "HTML",
+                                "value": "html"
+                            }
+                        ]
+                    },
+                    "preserveFormatting": {
+                        "type": "toggle",
+                        "index": 9,
+                        "label": "Preserve Formatting",
+                        "defaultValue": false,
+                        "tooltip": "Keep the original formatting (punctuation, upper and lower case at the start of a sentence) even where DeepL would correct it."
+                    }
+                }
+            }
+        }
+    ],
+    "outPorts": [
+        {
+            "name": "out",
+            "schema": {
+                "type": "object",
+                "required": [
+                    "text",
+                    "detected_source_language"
+                ],
+                "properties": {
+                    "text": {
+                        "type": "string",
+                        "title": "Translated Text",
+                        "example": "Hallo, Welt!"
+                    },
+                    "detected_source_language": {
+                        "type": "string",
+                        "title": "Detected Source Language",
+                        "example": "EN"
+                    },
+                    "billed_characters": {
+                        "type": "integer",
+                        "title": "Billed Characters",
+                        "example": 13
+                    },
+                    "model_type_used": {
+                        "type": "string",
+                        "title": "Model Type Used",
+                        "example": "quality_optimized"
+                    }
+                }
+            }
+        }
+    ],
+    "icon": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJEZWVwTCI+PHBhdGggZmlsbD0iIzBGMkI0NiIgZD0iTTIwLjkwNyA0LjkzOTUzIDEyLjY4NTQzLjE4NTczYTEuMzU3NyAxLjM1NzcgMCAwIDAtMS4zNzA5IDBMMy4wOTI5OCA0Ljk1NjVhMS4zNzY2IDEuMzc2NiAwIDAgMC0uNjg2MzkgMS4xODIzM3Y5LjUyNjQ2YTEuMzc2NiAxLjM3NjYgMCAwIDAgLjY4NjM5IDEuMTkzNjNsOC4yMjE1NyA0Ljc1OTQ2LjA2MjIzLjAzNTgzIDQuMDQ4NTYgMi4zNDU4LS4wMTEzMS0yLjA2MTA2LjAwNzUtMS4xNDQ2LjAwMzguMDE4ODV2LS4zODQ2N2MwLS4yMzAwNi4xMTg4LS40MzM3MS4yOTYwNS0uNTYwMDVsLjI2NC0uMTUwODYuMTI2MzMtLjA2OTc3aC0uMDA3NWw0LjgwMjgzLTIuNzc5NWExLjM4MDMgMS4zODAzIDAgMCAwIC42ODYzOS0xLjE5NTUxVjYuMTM1MDVhMS4zODAzIDEuMzgwMyAwIDAgMC0uNjg2NDItMS4xOTU1Mm0tOS44NTI2OSA5LjY4ODYzYTEuNDI3NSAxLjQyNzUgMCAwIDEtLjM5OTc2IDEuMzg0MSAxLjQwODYgMS40MDg2IDAgMCAxLTEuOTcwNTQgMCAxLjQxOTkgMS40MTk5IDAgMCAxIDAtMi4wNjI5NCAxLjQwODYgMS40MDg2IDAgMCAxIDIuMDQyMi4wNzU0M2wzLjMyODIyLTEuOTE1ODUuNjg2NC4zODY1NnptNS43NzAxOS0yLjQxMzY3YTEuNDA4NiAxLjQwODYgMCAwIDEtMS45NzA1NCAwIDEuNDI1NiAxLjQyNTYgMCAwIDEtLjM2OTYtMS40NzgzN2wtLjAxMzIuMDA3NS0zLjc1MjUtMi4xNzIzLS4wNTY1Ny4wNTY1NmExLjQwODYgMS40MDg2IDAgMCAxLTEuOTcwNTMgMCAxLjQxOTkgMS40MTk5IDAgMCAxIDAtMi4wNjI5MyAxLjQwODYgMS40MDg2IDAgMCAxIDEuOTcyNDIgMGMuMzk0MS4zNzcxMy41MjQyMi45MTgzMi4zOTAzMyAxLjQwNjcybDMuNzgwOCAyLjIwMDU5LjAxODg2LS4wMTg4NmExLjQwODYgMS40MDg2IDAgMCAxIDEuOTcyNDIgMCAxLjQyNzQ2IDEuNDI3NDYgMCAwIDEgMCAyLjA2MTA1eiIvPjwvc3ZnPg=="
+}

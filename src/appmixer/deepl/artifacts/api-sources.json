@@ -1,0 +1,9 @@
+{
+    "apiReference": "https://developers.deepl.com/api-reference/translate/request-translation",
+    "authDocs": "https://developers.deepl.com/docs/getting-started/auth",
+    "changelog": "https://developers.deepl.com/docs/resources/roadmap-and-release-notes",
+    "openApi": "https://developers.deepl.com/api-reference/openapi.yaml",
+    "baseUrl": "https://api.deepl.com (Pro) / https://api-free.deepl.com (Free)",
+    "apiVersion": "v2 (translate, document, write, usage); v3 (glossaries, languages)",
+    "checkedAt": "2026-11-28"
+}
